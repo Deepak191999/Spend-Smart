@@ -29,8 +29,8 @@
         <label for="type">Type:</label>
         <select id="type" name="type" onchange="showOptions()" required>
             <option value="">Select Type</option>
-            <option value="credit">Credit</option>
-            <option value="debit">Debit</option>
+            <option value="Credit">Credit</option>
+            <option value="Debit">Debit</option>
         </select><br><br>
 
         <!-- Options for Credit -->
@@ -38,9 +38,9 @@
             <label for="creditCategory">Category:</label>
             <select id="creditCategory" name="creditCategory">
                 <option value="">Select Category</option>
-                <option value="savings">Savings</option>
-                <option value="salary">Salary</option>
-                <option value="lottery">Lottery</option>
+                <option value="Savings">Savings</option>
+                <option value="Salary">Salary</option>
+                <option value="Lottery">Lottery</option>
             </select><br><br>
         </div>
 
@@ -49,9 +49,9 @@
             <label for="debitCategory">Category:</label>
             <select id="debitCategory" name="debitCategory">
                 <option value="">Select Category</option>
-                <option value="insurance">Insurance</option>
-                <option value="food">Food</option>
-                <option value="clothes">Clothes</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Food">Food</option>
+                <option value="Clothes">Clothes</option>
             </select><br><br>
         </div>
 
@@ -70,7 +70,7 @@
 
      document.addEventListener("DOMContentLoaded", function () {
             // Set the default value of the type dropdown to "Credit"
-            document.getElementById("type").value = "credit";
+            document.getElementById("type").value = "Credit";
             // Show category options based on the default selected type
             showOptions();
         });
@@ -80,10 +80,10 @@
             var creditOptions = document.getElementById("creditOptions");
             var debitOptions = document.getElementById("debitOptions");
 
-            if (type === "credit") {
+            if (type === "Credit") {
                 creditOptions.style.display = "block";
                 debitOptions.style.display = "none";
-            } else if (type === "debit") {
+            } else if (type === "Debit") {
                 creditOptions.style.display = "none";
                 debitOptions.style.display = "block";
             }

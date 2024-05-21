@@ -27,7 +27,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const app = express();
 const PORT = 4444;
-// const moment = require('moment');
+const moment = require('moment');
 
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -37,9 +37,10 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Register the partials directory
 hbs.registerPartials(path.join(__dirname, 'views/partials'));
-// hbs.registerHelper('moment', function(date, format) {
-//   return moment(date).format(format);
-// });
+
+hbs.registerHelper('moment', function(date, format) {
+  return moment(date).format(format);
+});
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));

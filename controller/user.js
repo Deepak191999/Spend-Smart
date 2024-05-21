@@ -64,7 +64,7 @@ console.log("Request Body:", req.body);
     return res.status(401).send("User is not authenticated");
   }
 
-const category = type === "credit" ? creditCategory : debitCategory;
+const category = type === "Credit" ? creditCategory : debitCategory;
 try {
     const newTransaction = new transaction({
         userId,
@@ -90,9 +90,20 @@ const userId=req.user._id;
  console.log("userid aya",userId);
     try {
         const userTransaction= await transaction.find({userId});
-
+        let totalCredit=0;
+        let totalDebit=0
+        userTransaction.forEach((item)=>{
+            if(item.type==="Credit"){
+                totalCredit += item.amount} 
+            if(item.type==="Debit"){
+                totalDebit += item.amount}
+        })
+        let balance=totalCredit-totalDebit;
         res.render('alltransaction',{
-            transactions:userTransaction
+            transactions:userTransaction,
+            totalCredit,
+            totalDebit,
+            balance
         })
     } catch (error) {
         console.log("error getting all transaction");

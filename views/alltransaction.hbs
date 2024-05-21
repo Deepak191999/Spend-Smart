@@ -5,13 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
        <link rel="stylesheet" href="../public/partials/navbar.css">
+    <style>
+       .transaction-table, .total-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .transaction-table th, .transaction-table td,.total-table th, .total-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .transaction-table th, .total-table th{
+            background-color: #f2f2f2;
+        }
+        h1{
+            text-align: center;
+            margin-top: 30px;
+        }
+        .summary{
+            margin-top: 100px;
+        }
+    </style>
 </head>
 <body>
     {{> navbar}}
     <h1>Your all transaction</h1>
     
 
-    <table>
+    <table class="transaction-table">
         <thead>
             <tr>
                 <th>Type</th>
@@ -31,8 +54,7 @@
                 <td> {{this.type}} </td>
                 <td> {{this.category}} </td>
                 <td> {{this.description}} </td>
-                <td> {{this.date}} </td>
-                {{!-- <td>{{moment this.date "MMM DD YYYY"}}</td> --}}
+                <td>{{moment this.date "DD MMM YYYY"}}</td>
                 <td> {{this.amount}} </td>
             </tr>
                
@@ -47,7 +69,25 @@
         
     </table>
 
-    <h1>hello ji</h1>
+    <h1 class="summary">Summary</h1>
+    <table class="total-table">
+        <thead>
+            <tr>
+                <th>Total Credit</th>
+                <th>Total Debit</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>+{{totalCredit}}</td>
+                <td>-{{totalDebit}}</td>
+                <td>{{balance}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    
 
   
 </body>
@@ -55,18 +95,3 @@
 
 
 
-{{!-- {{#if transactions.length}}
-        <ul>
-            {{#each transactions}}
-                <li>
-                    <strong>Amount:</strong> {{this.amount}} <br>
-                    <strong>Type:</strong> {{this.type}} <br>
-                    <strong>Category:</strong> {{this.category}} <br>
-                    <strong>Description:</strong> {{this.description}} <br>
-                    <strong>Date:</strong> {{this.date}} <br>
-                </li>
-            {{/each}}
-        </ul>
-    {{else}}
-        <p>No transactions found.</p>
-    {{/if}} --}}
