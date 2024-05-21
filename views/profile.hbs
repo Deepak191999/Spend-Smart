@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+      <h1>welcome to profile page</h1>
+
+    Name:{{user.username}} <br>
+    password:{{user.password}}
+<br>
+<br>
+    <a href="/logout">Logout</a>
+
+
+  
+
+ <h1>Welcome to your profile page</h1>
+    <form id="transactionForm" action="/addTransaction" method="POST">
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" required><br><br>
+        
+        <label for="type">Type:</label>
+        <select id="type" name="type" onchange="showOptions()" required>
+            <option value="">Select Type</option>
+            <option value="credit">Credit</option>
+            <option value="debit">Debit</option>
+        </select><br><br>
+
+        <!-- Options for Credit -->
+        <div id="creditOptions">
+            <label for="creditCategory">Category:</label>
+            <select id="creditCategory" name="creditCategory">
+                <option value="">Select Category</option>
+                <option value="savings">Savings</option>
+                <option value="salary">Salary</option>
+                <option value="lottery">Lottery</option>
+            </select><br><br>
+        </div>
+
+        <!-- Options for Debit -->
+        <div id="debitOptions">
+            <label for="debitCategory">Category:</label>
+            <select id="debitCategory" name="debitCategory">
+                <option value="">Select Category</option>
+                <option value="insurance">Insurance</option>
+                <option value="food">Food</option>
+                <option value="clothes">Clothes</option>
+            </select><br><br>
+        </div>
+
+         <label for="description">Description:</label>
+        <input type="text" id="description" name="description"><br><br>
+
+         <label for="date">Date:</label>
+        <input type="date" id="date" name="date"><br><br>
+        
+
+        <button type="submit" value="Submit">submit </button>
+    </form>
+
+
+<script>
+
+     document.addEventListener("DOMContentLoaded", function () {
+            // Set the default value of the type dropdown to "Credit"
+            document.getElementById("type").value = "credit";
+            // Show category options based on the default selected type
+            showOptions();
+        });
+
+        function showOptions() {
+            var type = document.getElementById("type").value;
+            var creditOptions = document.getElementById("creditOptions");
+            var debitOptions = document.getElementById("debitOptions");
+
+            if (type === "credit") {
+                creditOptions.style.display = "block";
+                debitOptions.style.display = "none";
+            } else if (type === "debit") {
+                creditOptions.style.display = "none";
+                debitOptions.style.display = "block";
+            }
+        }
+
+               /*{{!-- let formData= document.getElementById("transactionForm");
+               formData.addEventListener('submit',(e) =>{
+            //e.preventDefault();
+
+             let amount = document.getElementById("amount").value;
+            let type = document.getElementById("type").value;
+            let category = type === "credit" ? document.getElementById("creditCategory").value : document.getElementById("debitCategory").value;
+            let description = document.getElementById("description").value;
+            let date = document.getElementById("date").value;
+
+                if (!amount || !type || !category || !description || !date) {
+                    console.error("All fields are required.");
+                    return;
+                    }
+            // Log the form data to the console
+            console.log("Amount:", amount);
+            
+            console.log("Type:", type);
+            console.log("Category:", category);
+            console.log("Description:", description);
+            console.log("Date:", date);
+
+            formData.reset();
+       }) --}} */
+
+    </script>
+
+</body>
+</html>
