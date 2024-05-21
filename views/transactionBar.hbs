@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --progress-bar-width: 200px;
+  --progress-bar-height: 200px;
+  --font-size: 2rem;
+}
+
+.circular-progress {
+  width: var(--progress-bar-width);
+  height: var(--progress-bar-height);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.inner-circle {
+  position: absolute;
+  width: calc(var(--progress-bar-width) - 30px);
+  height: calc(var(--progress-bar-height) - 30px);
+  border-radius: 50%;
+  background-color: lightgrey;
+}
+
+.percentage {
+  position: relative;
+  font-size: var(--font-size);
+  color: rgb(0, 0, 0, 0.8);
+}
+.Income{
+    color: green;
+}
+.Expense{
+    color: red;
+}
+    </style>
+</head>
+<body>
+    {{> navbar}}
+    <h2>Trasaction bar page</h2>
+    <h2 >Total Turn Over: {{turnOver}}</h2>
+    <h2 class="Income">Income: {{totalCredit}}</h2>
+    <h2 class="Expense">Expense: {{totalDebit}}</h2>
+    <div style="display: flex;">
+    <div class="circular-progress credit-progress" data-total-amount="{{totalCredit}}" data-progress-color="green" data-bg-color="lightgrey">
+        <div class="inner-circle"></div>
+        <p class="percentage">0%</p>
+    </div>
+
+    <div class="circular-progress debit-progress" data-total-amount="{{totalDebit}}" data-progress-color="red" data-bg-color="lightgrey">
+        <div class="inner-circle"></div>
+        <p class="percentage">0%</p>
+    </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const creditProgress = document.querySelector(".credit-progress");
+            const debitProgress = document.querySelector(".debit-progress");
+
+            const createCircularProgress = (progressBar, totalAmount, progressColor) => {
+                const progressValue = progressBar.querySelector(".percentage");
+                const innerCircle = progressBar.querySelector(".inner-circle");
+                
+                let percentage = 0;
+                if (totalAmount > 0) {
+                    percentage = (totalAmount / (totalCredit + totalDebit)) * 100; // Calculate percentage of total amount
+                }
+
+                let startValue = 0,
+                    endValue = Math.round(percentage),
+                    speed = 50;
+
+                const progress = setInterval(() => {
+                    startValue++;
+                    progressValue.textContent = `${startValue}%`;
+                    progressValue.style.color = `${progressColor}`;
+                    innerCircle.style.backgroundColor = `lightgrey`;
+                    progressBar.style.background = `conic-gradient(${progressColor} ${startValue * 3.6}deg, ${progressBar.getAttribute("data-bg-color")} 0deg)`;
+                    if (startValue === endValue) {
+                        clearInterval(progress);
+                    }
+                }, speed);
+            };
+
+            const totalCredit = parseInt(creditProgress.getAttribute("data-total-amount")) || 0;
+            const totalDebit = parseInt(debitProgress.getAttribute("data-total-amount")) || 0;
+
+            createCircularProgress(creditProgress, totalCredit, "green");
+            createCircularProgress(debitProgress, totalDebit, "red");
+        });
+    </script>
+
+
+
+
+
+</body>
+</html>

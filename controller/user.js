@@ -111,3 +111,32 @@ const userId=req.user._id;
     }
 
 }
+
+module.exports.getTransactionBar= async(req,res,next)=>{
+    const userId=req.user._id;
+ console.log("userid aya",userId);
+    try {
+        const userTransaction= await transaction.find({userId});
+        let totalCredit=0;
+        let totalDebit=0
+        userTransaction.forEach((item)=>{
+            if(item.type==="Credit"){
+                totalCredit += item.amount} 
+            if(item.type==="Debit"){
+                totalDebit += item.amount}
+        })
+        let balance=totalCredit-totalDebit;
+        let turnOver=totalCredit+totalDebit;
+        res.render('transactionBar',{
+            transactions:userTransaction,
+            totalCredit,
+            totalDebit,
+            turnOver,
+            balance
+        })
+    } catch (error) {
+        console.log("error getting all transaction");
+        next(error)
+    }
+
+}

@@ -32,6 +32,8 @@ router.post('/login',
 
 router.get('/allTransaction',isLoggedIn,userController.getAllTransaction);
 
+router.get('/transactionBar',isLoggedIn,userController.getTransactionBar);
+
 
 
 module.exports=router;
