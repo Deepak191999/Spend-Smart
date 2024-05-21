@@ -30,9 +30,12 @@ router.post('/login',
 
  router.post('/addTransaction',isLoggedIn,userController.postAddTransaction);
 
+router.get('/allTransaction',isLoggedIn,userController.getAllTransaction);
+
+
+
 module.exports=router;
 
 
 
-// router.get('/home',userController.getHome)
-// router.post('/home',userController.postHome)
+

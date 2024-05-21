@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Money Management</title>
+    {{!-- <link rel="stylesheet" href="../public/partials/navbar.css"> --}}
+    <link rel="stylesheet" href="../public/partials/navbar.css">
 </head>
 <body>
+      {{> navbar}}
+
       <h1>welcome to profile page</h1>
 
     Name:{{user.username}} <br>
@@ -17,7 +21,7 @@
 
   
 
- <h1>Welcome to your profile page</h1>
+
     <form id="transactionForm" action="/addTransaction" method="POST">
         <label for="amount">Amount:</label>
         <input type="number" id="amount" name="amount" required><br><br>

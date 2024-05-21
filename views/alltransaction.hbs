@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+       <link rel="stylesheet" href="../public/partials/navbar.css">
+</head>
+<body>
+    {{> navbar}}
+    <h1>Your all transaction</h1>
+    
+
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Amount</th>
+
+            </tr>
+        </thead>
+        <tbody>
+             {{#if transactions.length}}
+        
+            {{#each transactions}}
+            <tr>
+
+                <td> {{this.type}} </td>
+                <td> {{this.category}} </td>
+                <td> {{this.description}} </td>
+                <td> {{this.date}} </td>
+                {{!-- <td>{{moment this.date "MMM DD YYYY"}}</td> --}}
+                <td> {{this.amount}} </td>
+            </tr>
+               
+            {{/each}}
+        
+    {{else}}
+        <tr>
+                    <td colspan="5">No transactions found.</td>
+                </tr>
+    {{/if}}
+        </tbody>
+        
+    </table>
+
+    <h1>hello ji</h1>
+
+  
+</body>
+</html>
+
+
+
+{{!-- {{#if transactions.length}}
+        <ul>
+            {{#each transactions}}
+                <li>
+                    <strong>Amount:</strong> {{this.amount}} <br>
+                    <strong>Type:</strong> {{this.type}} <br>
+                    <strong>Category:</strong> {{this.category}} <br>
+                    <strong>Description:</strong> {{this.description}} <br>
+                    <strong>Date:</strong> {{this.date}} <br>
+                </li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>No transactions found.</p>
+    {{/if}} --}}

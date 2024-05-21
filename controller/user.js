@@ -4,6 +4,7 @@ const transaction= require('../models/transactions')
 const User= require('../models/users')
 const bcrypt=require('bcrypt')
 
+
 module.exports.getHome= (req,res,next)=>{
     if(req.user){return res.redirect('/profile')}
     res.render('home')
@@ -46,7 +47,7 @@ const saltRounds=10;
 }
 
 module.exports.getProfile=(req,res,next)=>{
-    if(!req.user){return res.redirect('/login')}
+    // if(!req.user){return res.redirect('/login')}
     res.render('profile',{
         user:req.user
         
@@ -82,4 +83,20 @@ try {
     console.error("Error saving transaction:", error);
     next(error)
 }
+}
+
+module.exports.getAllTransaction=async(req,res,next)=>{
+const userId=req.user._id;
+ console.log("userid aya",userId);
+    try {
+        const userTransaction= await transaction.find({userId});
+
+        res.render('alltransaction',{
+            transactions:userTransaction
+        })
+    } catch (error) {
+        console.log("error getting all transaction");
+        next(error)
+    }
+
 }
