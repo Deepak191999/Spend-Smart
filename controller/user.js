@@ -1,5 +1,6 @@
 // const mongoose=require('mongoose')
 
+const transactions = require('../models/transactions')
 const transaction= require('../models/transactions')
 const User= require('../models/users')
 const bcrypt=require('bcrypt')
@@ -78,7 +79,7 @@ try {
       await newTransaction.save();
       console.log("Transaction saved successfully:", newTransaction);
   
-      res.redirect('/profile');
+      res.redirect('/alltransaction');
 } catch (error) {
     console.error("Error saving transaction:", error);
     next(error)
@@ -87,7 +88,7 @@ try {
 
 module.exports.getAllTransaction=async(req,res,next)=>{
 const userId=req.user._id;
- console.log("userid aya",userId);
+//  console.log("userid aya getAllTransaction",userId);
     try {
         const userTransaction= await transaction.find({userId});
         let totalCredit=0;
@@ -114,7 +115,7 @@ const userId=req.user._id;
 
 module.exports.getTransactionBar= async(req,res,next)=>{
     const userId=req.user._id;
- console.log("userid aya",userId);
+//  console.log("userid aya getTransactionBar",userId);
     try {
         const userTransaction= await transaction.find({userId});
         let totalCredit=0;
@@ -127,16 +128,32 @@ module.exports.getTransactionBar= async(req,res,next)=>{
         })
         let balance=totalCredit-totalDebit;
         let turnOver=totalCredit+totalDebit;
+        let savingsRate = totalCredit > 0 ? ((balance / totalCredit) * 100).toFixed(1) : 0;
+        let savingsRateIsGood = (savingsRate > 20)
         res.render('transactionBar',{
             transactions:userTransaction,
             totalCredit,
             totalDebit,
             turnOver,
-            balance
+            balance,
+            savingsRate,
+            savingsRateIsGood
         })
     } catch (error) {
         console.log("error getting all transaction");
         next(error)
     }
 
+}
+
+
+module.exports.getIncomeStats=async (req,res,next)=>{
+    const userId=req.user._id;
+    console.log("userid aya getIncomeStats",userId);
+
+    try {
+        const userTransaction= await transactions.find({userId,type:'Credit'})
+    } catch (error) {
+        
+    }
 }

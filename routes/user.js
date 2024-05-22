@@ -33,6 +33,7 @@ router.post('/login',
 router.get('/allTransaction',isLoggedIn,userController.getAllTransaction);
 
 router.get('/transactionBar',isLoggedIn,userController.getTransactionBar);
+router.get('/incomestats',isLoggedIn,userController.getIncomeStats);
 
 
 

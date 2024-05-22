@@ -24,6 +24,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 30px;
 }
 .inner-circle {
   position: absolute;
@@ -44,15 +45,32 @@
 .Expense{
     color: red;
 }
+.ProgressBar{
+    width: 100%;
+     text-align: center;
+     align-items: center; 
+     justify-content: center;
+     padding: 10px;
+     margin-top: 30px;
+}
+h2
+{
+    text-align: center;
+display: flex;text-align: center; justify-content: center;
+padding: 20px;
+}
     </style>
 </head>
 <body>
     {{> navbar}}
-    <h2>Trasaction bar page</h2>
+    
     <h2 >Total Turn Over: {{turnOver}}</h2>
-    <h2 class="Income">Income: {{totalCredit}}</h2>
-    <h2 class="Expense">Expense: {{totalDebit}}</h2>
-    <div style="display: flex;">
+    <div style="display: flex;text-align: center; justify-content: center;">
+    <h2 style="padding: 20px;" class="Income">Income: {{totalCredit}}</h2>
+    <h2 style="padding: 20px;" class="Expense">Expense: {{totalDebit}}</h2>
+    </div>
+
+    <div class="ProgressBar" style="display: flex;">
     <div class="circular-progress credit-progress" data-total-amount="{{totalCredit}}" data-progress-color="green" data-bg-color="lightgrey">
         <div class="inner-circle"></div>
         <p class="percentage">0%</p>
@@ -64,28 +82,33 @@
     </div>
     </div>
 
-    <script>
+    
+     <h2>General Advice</h2>
+    {{#if savingsRateIsGood}}
+        <h2>With {{savingsRate}}% of income saved, You are in an excellent financial position. You are saving well above the recommended minimum of 20% and even surpassing the 30% mark, which is excellent.</h2>
+        {{!-- //<p>Expenses are {{100 - savingsRate}}% of income, which is well within the healthy range. This user has a robust savings rate and good control over their expenses.</p> --}}
+    {{else}}
+        <h2>You need to save more money. Try to increase your savings rate to at least 20% of your income.</h2>
+    {{/if}}
+
+
+ <script>
         document.addEventListener("DOMContentLoaded", function() {
             const creditProgress = document.querySelector(".credit-progress");
             const debitProgress = document.querySelector(".debit-progress");
 
-            const createCircularProgress = (progressBar, totalAmount, progressColor) => {
+            const createCircularProgress = (progressBar, percentage, progressColor) => {
                 const progressValue = progressBar.querySelector(".percentage");
                 const innerCircle = progressBar.querySelector(".inner-circle");
-                
-                let percentage = 0;
-                if (totalAmount > 0) {
-                    percentage = (totalAmount / (totalCredit + totalDebit)) * 100; // Calculate percentage of total amount
-                }
 
-                let startValue = 0,
-                    endValue = Math.round(percentage),
-                    speed = 50;
+                let startValue = 0;
+                const endValue = Math.round(percentage);
+                const speed = 10; // Decreased speed value to make the progress bar load faster
 
                 const progress = setInterval(() => {
                     startValue++;
                     progressValue.textContent = `${startValue}%`;
-                    progressValue.style.color = `${progressColor}`;
+                    progressValue.style.color = progressColor;
                     innerCircle.style.backgroundColor = `lightgrey`;
                     progressBar.style.background = `conic-gradient(${progressColor} ${startValue * 3.6}deg, ${progressBar.getAttribute("data-bg-color")} 0deg)`;
                     if (startValue === endValue) {
@@ -97,11 +120,18 @@
             const totalCredit = parseInt(creditProgress.getAttribute("data-total-amount")) || 0;
             const totalDebit = parseInt(debitProgress.getAttribute("data-total-amount")) || 0;
 
-            createCircularProgress(creditProgress, totalCredit, "green");
-            createCircularProgress(debitProgress, totalDebit, "red");
+            if (totalCredit > 0) {
+                const debitPercentage = (totalDebit / totalCredit) * 100;
+                const creditPercentage = 100 - debitPercentage;
+
+                createCircularProgress(creditProgress, creditPercentage, "green");
+                createCircularProgress(debitProgress, debitPercentage, "red");
+            } else {
+                createCircularProgress(creditProgress, 0, "green");
+                createCircularProgress(debitProgress, 0, "red");
+            }
         });
     </script>
-
 
 
 

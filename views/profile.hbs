@@ -6,19 +6,75 @@
     <title>Money Management</title>
     
     {{!-- <link rel="stylesheet" href="../public/partials/navbar.css"> --}}
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+            font-size: large;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="number"], input[type="text"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #creditOptions, #debitOptions {
+            display: none;
+        }
+    </style>
   
 </head>
 <body>
       {{> navbar}}
       
 
-      <h1>welcome to profile page</h1>
+      <h1>welcome {{user.username}} to profile page</h1>
 
-    Name:{{user.username}} <br>
-    password:{{user.password}}
+    {{!-- Name:<br> --}}
+    {{!-- password:{{user.password}} --}}
 <br>
 <br>
-    <a href="/logout">Logout</a>
+    
 
 
   
@@ -40,9 +96,11 @@
             <label for="creditCategory">Category:</label>
             <select id="creditCategory" name="creditCategory">
                 <option value="">Select Category</option>
-                <option value="Savings">Savings</option>
-                <option value="Salary">Salary</option>
-                <option value="Lottery">Lottery</option>
+                <option value="Salary">💰 Salary</option>
+                <option value="Allowance">🤑 Allowance</option>
+                <option value="Cash">💵 Petty Cash</option>
+                <option value="Bonus">🏅 Bonus</option>
+                <option value="Other">Other</option>
             </select><br><br>
         </div>
 
@@ -51,9 +109,18 @@
             <label for="debitCategory">Category:</label>
             <select id="debitCategory" name="debitCategory">
                 <option value="">Select Category</option>
-                <option value="Insurance">Insurance</option>
-                <option value="Food">Food</option>
-                <option value="Clothes">Clothes</option>
+                <option value="Food">🍜 Food</option>
+                <option value="Life">🧑‍🤝‍🧑 Social Life</option>
+                <option value="Pets">🐶 Pets</option>
+                <option value="Transport">🚕 Transport</option>
+                <option value="Culture">🖼️ Culture</option>
+                <option value="Household">🪑 Household</option>
+                <option value="Apparel">👕 Apparel</option>
+                <option value="Beauty">💅🏻 Beauty</option>
+                <option value="Health">🩺 Health</option>
+                <option value="Education">📖 Education</option>
+                <option value="Gift">🎁 Gift</option>
+                <option value="Other">Other</option>
             </select><br><br>
         </div>
 
@@ -90,32 +157,6 @@
                 debitOptions.style.display = "block";
             }
         }
-
-               /*{{!-- let formData= document.getElementById("transactionForm");
-               formData.addEventListener('submit',(e) =>{
-            //e.preventDefault();
-
-             let amount = document.getElementById("amount").value;
-            let type = document.getElementById("type").value;
-            let category = type === "credit" ? document.getElementById("creditCategory").value : document.getElementById("debitCategory").value;
-            let description = document.getElementById("description").value;
-            let date = document.getElementById("date").value;
-
-                if (!amount || !type || !category || !description || !date) {
-                    console.error("All fields are required.");
-                    return;
-                    }
-            // Log the form data to the console
-            console.log("Amount:", amount);
-            
-            console.log("Type:", type);
-            console.log("Category:", category);
-            console.log("Description:", description);
-            console.log("Date:", date);
-
-            formData.reset();
-       }) --}} */
-
     </script>
 
 </body>

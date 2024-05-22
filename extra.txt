@@ -80,3 +80,42 @@ Array.from(circularProgress).forEach((progressBar) => {
 </script>
 </body>
 </html>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+            const creditProgress = document.querySelector(".credit-progress");
+            const debitProgress = document.querySelector(".debit-progress");
+
+            const createCircularProgress = (progressBar, totalAmount, progressColor, totalTurnover) => {
+                const progressValue = progressBar.querySelector(".percentage");
+                const innerCircle = progressBar.querySelector(".inner-circle");
+
+                let percentage = 0;
+                if (totalTurnover > 0) {
+                    percentage = (totalAmount / totalTurnover) * 100; // Calculate percentage of total turnover
+                }
+
+                let startValue = 0,
+                    endValue = Math.round(percentage),
+                    speed = 10; // Decreased speed value to make the progress bar load faster
+
+                const progress = setInterval(() => {
+                    startValue++;
+                    progressValue.textContent = `${startValue}%`;
+                    progressValue.style.color = `${progressColor}`;
+                    innerCircle.style.backgroundColor = `lightgrey`;
+                    progressBar.style.background = `conic-gradient(${progressColor} ${startValue * 3.6}deg, ${progressBar.getAttribute("data-bg-color")} 0deg)`;
+                    if (startValue === endValue) {
+                        clearInterval(progress);
+                    }
+                }, speed);
+            };
+
+            const totalTurnover = {{totalCredit}} + {{totalDebit}};
+            createCircularProgress(creditProgress, {{totalCredit}}, "green", totalTurnover);
+            createCircularProgress(debitProgress, {{totalDebit}}, "red", totalTurnover);
+    })
+  </script>
