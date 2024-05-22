@@ -149,11 +149,75 @@ module.exports.getTransactionBar= async(req,res,next)=>{
 
 module.exports.getIncomeStats=async (req,res,next)=>{
     const userId=req.user._id;
-    console.log("userid aya getIncomeStats",userId);
+    // console.log("userid aya getIncomeStats",userId);
 
     try {
         const userTransaction= await transactions.find({userId,type:'Credit'})
+        let totalIncome=0;
+        let incomeCategory={}
+        // console.log("userTransaction income",userTransaction)
+
+        userTransaction.forEach((item)=>{
+            totalIncome+=item.amount;
+            if(incomeCategory[item.category]){
+                incomeCategory[item.category] += item.amount
+            }
+            else{
+                incomeCategory[item.category]= item.amount
+            }
+
+        })
+        // console.log("incomeCategory",incomeCategory);
+        let incomePercentage={};
+        for (let ctgry in incomeCategory) {
+            incomePercentage[ctgry]=((incomeCategory[ctgry]/totalIncome)*100).toFixed(1);
+        }
+        // console.log("incomePercentage",incomePercentage);
+
+        res.render('incomeStats',{
+            totalIncome,
+            incomePercentage
+        })
     } catch (error) {
-        
+        console.log("Error getting income statistics:", error);
+        next(error);
+    }
+};
+
+
+module.exports.getExpenseStats=async (req,res,next)=>{
+    const userId=req.user._id;
+    // console.log("userid aya getExpenseStats",userId);
+
+    try {
+        const userTransaction= await transactions.find({userId,type:'Debit'})
+        let totalExpense = 0;
+        let expenseCategory ={}
+        // console.log("userTransaction Expense",userTransaction)
+
+        userTransaction.forEach((item)=>{
+             totalExpense += item.amount;
+            if(expenseCategory[item.category]){
+                expenseCategory[item.category] += item.amount
+            }
+            else{
+                expenseCategory[item.category] = item.amount
+            }
+
+        })
+        // console.log("expenseCategory",expenseCategory);
+        let expensePercentage={};
+        for (let ctgry in expenseCategory) {
+            expensePercentage[ctgry]=((expenseCategory[ctgry]/totalExpense)*100).toFixed(1);
+        }
+        // console.log("expensePercentage",expensePercentage);
+
+        res.render('expenseStats',{
+            totalExpense,
+            expensePercentage
+        })
+    } catch (error) {
+        console.log("Error getting income statistics:", error);
+        next(error);
     }
 }

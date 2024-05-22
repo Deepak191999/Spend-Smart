@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Statistics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+
+        .circular-progress {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+            position: relative;
+            background: conic-gradient(
+                #ff6384 0%,
+                #ff6384 0%,
+                #36a2eb 0%,
+                #36a2eb 0%,
+                #ffcd56 0%,
+                #ffcd56 0%,
+                #4bc0c0 0%,
+                #4bc0c0 0%,
+                #9966ff 0%,
+                #9966ff 0%
+            );
+        }
+
+        .inner-circle {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background-color: lightgrey;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .labels {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .label {
+            display: inline-block;
+            margin: 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .food { background-color: #ff6384; color: white; }
+        .clothes { background-color: #36a2eb; color: white; }
+        .household { background-color: #ffcd56; color: white; }
+        .health { background-color: #4bc0c0; color: white; }
+        .pets { background-color: #9966ff; color: white; }
+    </style>
+</head>
+<body>
+    {{> navbar}}
+
+    <h2>Total Expenses: {{totalExpense}}</h2>
+
+    <div class="circular-progress">
+        <div class="inner-circle">
+            <p>Expense Breakdown</p>
+        </div>
+    </div>
+
+    <div class="labels">
+        {{#each expensePercentage}}
+            <span class="label" style="background-color: {{getColor @key}};">{{@key}}: {{this}}%</span>
+        {{/each}}
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const expensePercentage = {{{json expensePercentage}}};
+
+            const colors = {
+                Food: '#ff6384',
+                Clothes: '#36a2eb',
+                Household: '#ffcd56',
+                Health: '#4bc0c0',
+                Pets: '#9966ff',
+                Other: '#ff9f40' // Add default color for other categories
+            };
+
+            let gradientStops = [];
+            let accumulatedPercentage = 0;
+
+            for (const [category, percentage] of Object.entries(expensePercentage)) {
+                const color = colors[category] || colors['Other'];
+                const stopStart = accumulatedPercentage;
+                accumulatedPercentage += parseFloat(percentage);
+                const stopEnd = accumulatedPercentage;
+
+                gradientStops.push(`${color} ${stopStart}% ${stopEnd}%`);
+            }
+
+            const gradient = `conic-gradient(${gradientStops.join(', ')})`;
+
+            document.querySelector('.circular-progress').style.background = gradient;
+        });
+    </script>
+</body>
+</html>

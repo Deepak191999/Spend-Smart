@@ -37,7 +37,20 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Register the partials directory
 hbs.registerPartials(path.join(__dirname, 'views/partials'));
-
+hbs.registerHelper('json', function(context) {
+  return JSON.stringify(context);
+});
+hbs.registerHelper('getColor', function(category) {
+  const colors = {
+      Food: '#ff6384',
+      Clothes: '#36a2eb',
+      Household: '#ffcd56',
+      Health: '#4bc0c0',
+      Pets: '#9966ff',
+      Other: '#ff9f40' // Add default color for other categories
+  };
+  return colors[category] || colors['Other'];
+});
 hbs.registerHelper('moment', function(date, format) {
   return moment(date).format(format);
 });
