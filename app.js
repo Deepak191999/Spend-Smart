@@ -1,22 +1,3 @@
-// const express = require('express');
-// const session = require('express-session');
-// const passport = require('passport');
-// require('dotenv').config()
-// const mongoose = require('mongoose');
-// const app = express();
-// const PORT = 4444;
-// const hbs= require('hbs')
-
-// app.set('view engine', 'hbs');
-// hbs.registerPartials(__dirname+'/views/patials')
-
-// app.use(express.urlencoded({ extended: true })); // Parses URL-encoded bodies
-// app.use(express.json()); // Parses JSON bodies
-
-// app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
-// app.use(passport.initialize());
-// app.use(passport.session());
-
 
 const express = require('express');
 const hbs = require('hbs');
@@ -40,17 +21,7 @@ hbs.registerPartials(path.join(__dirname, 'views/partials'));
 hbs.registerHelper('json', function(context) {
   return JSON.stringify(context);
 });
-hbs.registerHelper('getColor', function(category) {
-  const colors = {
-      Food: '#ff6384',
-      Clothes: '#36a2eb',
-      Household: '#ffcd56',
-      Health: '#4bc0c0',
-      Pets: '#9966ff',
-      Other: '#ff9f40' // Add default color for other categories
-  };
-  return colors[category] || colors['Other'];
-});
+
 hbs.registerHelper('moment', function(date, format) {
   return moment(date).format(format);
 });
@@ -63,7 +34,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-require('./authentication/passport'); // Ensure passport strategy is set up
+require('./authentication/passport'); 
 
 app.use('/', require('./routes/user'));
 
