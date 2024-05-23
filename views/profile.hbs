@@ -82,10 +82,10 @@
 
     <form id="transactionForm" action="/addTransaction" method="POST">
         <label for="amount">Amount:</label>
-        <input type="number" id="amount" name="amount" required><br><br>
+        <input type="number" id="amount" name="amount" required="true"><br><br>
         
         <label for="type">Type:</label>
-        <select id="type" name="type" onchange="showOptions()" required>
+        <select id="type" name="type" onchange="showOptions()" required="true">
             <option value="">Select Type</option>
             <option value="Credit">Credit</option>
             <option value="Debit">Debit</option>
@@ -125,10 +125,10 @@
         </div>
 
          <label for="description">Description:</label>
-        <input type="text" id="description" name="description"><br><br>
+        <input type="text" id="description" name="description" required="true"><br><br>
 
          <label for="date">Date:</label>
-        <input type="date" id="date" name="date"><br><br>
+        <input type="date" id="date" name="date" required="true"><br><br>
         
 
         <button type="submit" value="Submit">submit </button>
@@ -152,9 +152,11 @@
             if (type === "Credit") {
                 creditOptions.style.display = "block";
                 debitOptions.style.display = "none";
+                 //creditCategory.setAttribute("required", true);
             } else if (type === "Debit") {
                 creditOptions.style.display = "none";
                 debitOptions.style.display = "block";
+                // {{!-- debitCategory.setAttribute("required", true); --}}
             }
         }
     </script>

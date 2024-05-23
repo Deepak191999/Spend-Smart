@@ -58,8 +58,8 @@ module.exports.getProfile=(req,res,next)=>{
 module.exports.postAddTransaction = async(req,res,next)=>{
 const {amount,type,creditCategory,debitCategory,description,date}=req.body;
 const userId = req.user ? req.user._id : null;
-console.log("Request Body:", req.body);
-  console.log("User Id:", userId);
+// console.log("Request Body:", req.body);
+//   console.log("User Id:", userId);
   if (!userId) {
     console.error("User is not authenticated");
     return res.status(401).send("User is not authenticated");
