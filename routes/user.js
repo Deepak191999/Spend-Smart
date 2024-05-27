@@ -38,8 +38,11 @@ router.get('/incomestats',isLoggedIn,userController.getIncomeStats);
 router.get('/expensestats',isLoggedIn,userController.getExpenseStats);
 
 router.post('/deletetransaction/:id',isLoggedIn,userController.postDeleteTransaction);
-// router.post('/updatetransaction/:id',isLoggedIn,userController.postUpdateTransaction);
 
+// router.get('/updatetransaction/:id',isLoggedIn,userController.getUpdateTransaction);
+// router.post('/updatetransaction/:id',isLoggedIn,userController.postUpdateTransaction);
+router.get('/updatetransaction/:id', isLoggedIn, userController.getUpdateTransaction);
+router.post('/updatetransaction/:id', isLoggedIn, userController.postUpdateTransaction);
 
 
 module.exports=router;

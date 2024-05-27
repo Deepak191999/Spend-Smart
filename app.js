@@ -21,6 +21,9 @@ hbs.registerPartials(path.join(__dirname, 'views/partials'));
 hbs.registerHelper('json', function(context) {
   return JSON.stringify(context);
 });
+hbs.registerHelper('eq', function(v1, v2) {
+  return v1 === v2;
+});
 
 hbs.registerHelper('moment', function(date, format) {
   return moment(date).format(format);

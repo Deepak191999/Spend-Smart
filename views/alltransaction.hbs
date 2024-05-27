@@ -77,17 +77,9 @@
                         </form>
                         </td>
 
-                {{!-- <td> <form action="/updatetransaction/{{this._id}}" method="POST">
-                      <input type="text" name="amount" value="{{this.amount}}">
-                        <select name="type">
-                            <option value="Credit" {{#ifCond this.type '===' 'Credit'}} selected {{/ifCond}}>Credit</option>
-                            <option value="Debit" {{#ifCond this.type '===' 'Debit'}} selected {{/ifCond}}>Debit</option>
-                        </select>
-                        <input type="text" name="category" value="{{this.category}}">
-                        <input type="text" name="description" value="{{this.description}}">
-                        <input type="date" name="date" value="{{moment this.date 'YYYY-MM-DD'}}">
-                        <button type="submit">✏️ Update</button>
-                  </form></td> --}}
+             <td> <form action="/updatetransaction/{{this._id}}" method="GET">
+                 <button type="submit">✏️</button>
+                    </form></td>
             </tr>
                
             {{/each}}

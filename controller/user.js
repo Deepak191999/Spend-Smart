@@ -283,6 +283,8 @@ module.exports.getExpenseStats=async (req,res,next)=>{
     }
 }
 
+
+
 module.exports.postDeleteTransaction= async(req,res,next)=>{
     const transactionId = req.params.id;
     const userId = req.user._id;
@@ -291,7 +293,7 @@ module.exports.postDeleteTransaction= async(req,res,next)=>{
 
     try {
         const userTransaction= await transactions.find({_id:transactionId,userId})
-       // console.log('userTransaction',userTransaction);
+       console.log('userTransaction',userTransaction);
         if (!userTransaction) {
            console.log('Transaction not found for deletion.');
             return res.status(404).send('Transaction not found.');
@@ -329,47 +331,67 @@ module.exports.postDeleteTransaction= async(req,res,next)=>{
     }
 };
 
-
-// module.exports.postUpdateTransaction= async(req,res,next)=>{
-//     const transactionId = req.params.id;
-//     const userId = req.user._id;
-
-//     try {
-//         const userTransaction= await transactions.find({_id:transactionId,userId})
-//         console.log('userTransaction update',userTransaction);
-//         if (!userTransaction) {
-//             console.log('Transaction not found for updation.');
-//             return res.status(404).send('Transaction not found.');
-//         }
-//         await transactions.updateOne({_id:transactionId});
+module.exports.getUpdateTransaction=async(req,res,next)=>{
+    const transactionId = req.params.id;
+    const userId = req.user._id;
+    try {
+        const userTransaction= await transaction.findOne({_id:transactionId, userId})
+        if (!userTransaction) {
+            console.log('Transaction not found for updation.');
+            return res.status(404).send('Transaction not found.');
+        }
         
-//         const userNewTransactions = await transaction.find({ userId }).sort({ date: 1 });
+        res.render("updateTransaction", {
+            transaction: userTransaction,
+          });
+    } catch (error) {
+        next(error);
+    }
+}
 
-//         console.log("Transaction Updated");
+module.exports.postUpdateTransaction= async(req,res,next)=>{
+    const {amount,type, creditCategory, debitCategory,description,date}=req.body;
+    const transactionId = req.params.id;
+    const userId = req.user ? req.user._id : null;
+    // console.log("Request Body:", req.body);
+    //   console.log("User Id:", userId);
+
+    try {
+        let userTransaction= await transaction.findOne({_id:transactionId,userId})
+       
+        userTransaction.amount=amount;
+        userTransaction.type=type;
+        userTransaction.category = type === 'Credit' ? creditCategory : debitCategory;
+        userTransaction.description=description;
+        userTransaction.date=date;
+
+     await  userTransaction.save()
+        
 
 
-//         let totalCredit = 0;
-//         let totalDebit = 0;
-//         userNewTransactions.forEach((item) => {
-//             if (item.type === 'Credit') {
-//                 totalCredit += item.amount;
-//             }
-//             if (item.type === 'Debit') {
-//                 totalDebit += item.amount;
-//             }
-//         });
+        const userNewTransactions = await transaction.find({ userId }).sort({ date: 1 });
 
-//         let balance = totalCredit - totalDebit;
+        let totalCredit = 0;
+        let totalDebit = 0;
+        userNewTransactions.forEach((item) => {
+            if (item.type === 'Credit') {
+                totalCredit += item.amount;
+            } else if (item.type === 'Debit') {
+                totalDebit += item.amount;
+            }
+        });
 
-//         // Render the alltransaction view with updated data
-//         res.render('alltransaction', {
-//             transactions: userNewTransactions,
-//             totalCredit,
-//             totalDebit,
-//             balance
-//         });
-//     } catch (error) {
-//         console.error('Error deleting transaction:', error);
-//         next(error);
-//     }
-// }
+        let balance = totalCredit - totalDebit;
+
+        res.render('alltransaction', {
+            transactions: userNewTransactions,
+            totalCredit,
+            totalDebit,
+            balance
+        });
+    } catch (error) {
+        console.error('Error updating transaction:', error);
+        next(error);
+    }
+    
+}
