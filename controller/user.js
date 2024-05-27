@@ -88,42 +88,13 @@ try {
 }
 }
 
-// module.exports.getAllTransaction=async(req,res,next)=>{
-// const userId=req.user._id;
-// //  console.log("userid aya getAllTransaction",userId);
-//     try {
-//         const userTransaction= await transaction.find({userId});
-//         let totalCredit=0;
-//         let totalDebit=0
-//         userTransaction.forEach((item)=>{
-//             if(item.type==="Credit"){
-//                 totalCredit += item.amount} 
-//             if(item.type==="Debit"){
-//                 totalDebit += item.amount}
-//         })
-//         let balance=totalCredit-totalDebit;
-//         res.render('alltransaction',{
-//             transactions:userTransaction,
-//             totalCredit,
-//             totalDebit,
-//             balance
-//         })
-//     } catch (error) {
-//         console.log("error getting all transaction");
-//         next(error)
-//     }
-
-// }
 
 module.exports.getAllTransaction = async (req, res, next) => {
     const userId = req.user._id;
     
-
     try {
-        
         const userTransactions = await transaction.find({ userId }).sort({date:1});
 
-       
         let totalCredit = 0;
         let totalDebit = 0;
         userTransactions.forEach((item) => {
@@ -135,9 +106,7 @@ module.exports.getAllTransaction = async (req, res, next) => {
             }
         });
 
-
         let balance = totalCredit - totalDebit;
-
         
         res.render('alltransaction', {
             transactions: userTransactions,
@@ -314,18 +283,74 @@ module.exports.getExpenseStats=async (req,res,next)=>{
     }
 }
 
+module.exports.postDeleteTransaction= async(req,res,next)=>{
+    const transactionId = req.params.id;
+    const userId = req.user._id;
+    // console.log("transactionId",transactionId);
+    // console.log("userId",userId);
 
-// module.exports.getAllTransaction = async (req, res, next) => {
+    try {
+        const userTransaction= await transactions.find({_id:transactionId,userId})
+       // console.log('userTransaction',userTransaction);
+        if (!userTransaction) {
+           console.log('Transaction not found for deletion.');
+            return res.status(404).send('Transaction not found.');
+        }
+        await transactions.deleteOne({_id:transactionId});
+        
+        const userNewTransactions = await transaction.find({ userId }).sort({ date: 1 });
+
+        console.log("Transaction deleted");
+
+
+        let totalCredit = 0;
+        let totalDebit = 0;
+        userNewTransactions.forEach((item) => {
+            if (item.type === 'Credit') {
+                totalCredit += item.amount;
+            }
+            if (item.type === 'Debit') {
+                totalDebit += item.amount;
+            }
+        });
+
+        let balance = totalCredit - totalDebit;
+
+        // Render the alltransaction view with updated data
+        res.render('alltransaction', {
+            transactions: userNewTransactions,
+            totalCredit,
+            totalDebit,
+            balance
+        });
+    } catch (error) {
+        console.error('Error deleting transaction:', error);
+        next(error);
+    }
+};
+
+
+// module.exports.postUpdateTransaction= async(req,res,next)=>{
+//     const transactionId = req.params.id;
 //     const userId = req.user._id;
 
 //     try {
-//         // Fetch all user transactions
-//         const userTransactions = await transaction.find({ userId });
+//         const userTransaction= await transactions.find({_id:transactionId,userId})
+//         console.log('userTransaction update',userTransaction);
+//         if (!userTransaction) {
+//             console.log('Transaction not found for updation.');
+//             return res.status(404).send('Transaction not found.');
+//         }
+//         await transactions.updateOne({_id:transactionId});
+        
+//         const userNewTransactions = await transaction.find({ userId }).sort({ date: 1 });
 
-//         // Calculate total credit and debit
+//         console.log("Transaction Updated");
+
+
 //         let totalCredit = 0;
 //         let totalDebit = 0;
-//         userTransactions.forEach((item) => {
+//         userNewTransactions.forEach((item) => {
 //             if (item.type === 'Credit') {
 //                 totalCredit += item.amount;
 //             }
@@ -334,19 +359,17 @@ module.exports.getExpenseStats=async (req,res,next)=>{
 //             }
 //         });
 
-//         // Calculate balance
 //         let balance = totalCredit - totalDebit;
 
-//         // Render the alltransaction view with all transactions and totals
+//         // Render the alltransaction view with updated data
 //         res.render('alltransaction', {
-//             transactions: userTransactions,
+//             transactions: userNewTransactions,
 //             totalCredit,
 //             totalDebit,
 //             balance
 //         });
 //     } catch (error) {
-//         console.log("Error getting all transactions", error);
+//         console.error('Error deleting transaction:', error);
 //         next(error);
 //     }
-// };
-
+// }
