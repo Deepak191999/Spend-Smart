@@ -4,6 +4,8 @@ const transactions = require('../models/transactions')
 const transaction= require('../models/transactions')
 const User= require('../models/users')
 const bcrypt=require('bcrypt')
+const moment = require('moment');
+
 
 
 module.exports.getHome= (req,res,next)=>{
@@ -86,32 +88,122 @@ try {
 }
 }
 
-module.exports.getAllTransaction=async(req,res,next)=>{
-const userId=req.user._id;
-//  console.log("userid aya getAllTransaction",userId);
+// module.exports.getAllTransaction=async(req,res,next)=>{
+// const userId=req.user._id;
+// //  console.log("userid aya getAllTransaction",userId);
+//     try {
+//         const userTransaction= await transaction.find({userId});
+//         let totalCredit=0;
+//         let totalDebit=0
+//         userTransaction.forEach((item)=>{
+//             if(item.type==="Credit"){
+//                 totalCredit += item.amount} 
+//             if(item.type==="Debit"){
+//                 totalDebit += item.amount}
+//         })
+//         let balance=totalCredit-totalDebit;
+//         res.render('alltransaction',{
+//             transactions:userTransaction,
+//             totalCredit,
+//             totalDebit,
+//             balance
+//         })
+//     } catch (error) {
+//         console.log("error getting all transaction");
+//         next(error)
+//     }
+
+// }
+
+module.exports.getAllTransaction = async (req, res, next) => {
+    const userId = req.user._id;
+    
+
     try {
-        const userTransaction= await transaction.find({userId});
-        let totalCredit=0;
-        let totalDebit=0
-        userTransaction.forEach((item)=>{
-            if(item.type==="Credit"){
-                totalCredit += item.amount} 
-            if(item.type==="Debit"){
-                totalDebit += item.amount}
-        })
-        let balance=totalCredit-totalDebit;
-        res.render('alltransaction',{
-            transactions:userTransaction,
+        
+        const userTransactions = await transaction.find({ userId }).sort({date:1});
+
+       
+        let totalCredit = 0;
+        let totalDebit = 0;
+        userTransactions.forEach((item) => {
+            if (item.type === 'Credit') {
+                totalCredit += item.amount;
+            }
+            if (item.type === 'Debit') {
+                totalDebit += item.amount;
+            }
+        });
+
+
+        let balance = totalCredit - totalDebit;
+
+        
+        res.render('alltransaction', {
+            transactions: userTransactions,
             totalCredit,
             totalDebit,
             balance
-        })
+        });
     } catch (error) {
-        console.log("error getting all transaction");
-        next(error)
+        console.log("Error getting all transactions", error);
+        next(error);
     }
-
 }
+
+module.exports.postAllTransaction = async (req, res, next) => {
+    const userId = req.user._id;
+    const { startDate, endDate } = req.body;
+
+    try {
+        
+        const userTransactions = await transaction.find({ userId }).sort({date:1});
+
+        let filteredTransactions = userTransactions;
+        let start;
+        let end
+        if (startDate && endDate) {
+            start = moment(startDate, 'YYYY-MM-DD');
+             end = moment(endDate, 'YYYY-MM-DD').endOf('day'); 
+            console.log("start",start);
+            console.log("End",end);
+
+            filteredTransactions = userTransactions.filter((item) => {
+                const transactionDate = moment(item.date, 'DD MMM YYYY');
+                // console.log("transactionDate",transactionDate);
+                return transactionDate.isBetween(start, end, null, '[]');
+            });
+        }
+
+        
+        let totalCredit = 0;
+        let totalDebit = 0;
+        filteredTransactions.forEach((item) => {
+            if (item.type === 'Credit') {
+                totalCredit += item.amount;
+            }
+            if (item.type === 'Debit') {
+                totalDebit += item.amount;
+            }
+        });
+
+        // Calculate balance
+        let balance = totalCredit - totalDebit;
+
+        // Render the alltransaction view with filtered transactions and totals
+        res.render('alltransaction', {
+            transactions: filteredTransactions,
+            totalCredit,
+            totalDebit,
+            balance,
+            start,
+            end
+        });
+    } catch (error) {
+        console.log("Error filtering transactions", error);
+        next(error);
+    }
+};
 
 module.exports.getTransactionBar= async(req,res,next)=>{
     const userId=req.user._id;
@@ -221,3 +313,40 @@ module.exports.getExpenseStats=async (req,res,next)=>{
         next(error);
     }
 }
+
+
+// module.exports.getAllTransaction = async (req, res, next) => {
+//     const userId = req.user._id;
+
+//     try {
+//         // Fetch all user transactions
+//         const userTransactions = await transaction.find({ userId });
+
+//         // Calculate total credit and debit
+//         let totalCredit = 0;
+//         let totalDebit = 0;
+//         userTransactions.forEach((item) => {
+//             if (item.type === 'Credit') {
+//                 totalCredit += item.amount;
+//             }
+//             if (item.type === 'Debit') {
+//                 totalDebit += item.amount;
+//             }
+//         });
+
+//         // Calculate balance
+//         let balance = totalCredit - totalDebit;
+
+//         // Render the alltransaction view with all transactions and totals
+//         res.render('alltransaction', {
+//             transactions: userTransactions,
+//             totalCredit,
+//             totalDebit,
+//             balance
+//         });
+//     } catch (error) {
+//         console.log("Error getting all transactions", error);
+//         next(error);
+//     }
+// };
+

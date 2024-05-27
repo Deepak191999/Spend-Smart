@@ -9,6 +9,7 @@ passport.use(
       let user = await User.findOne({ username });
       if (!user) {
         return done(null, false);
+        
       }
       bcrypt.compare(password, user.password, function (err, result) {
         if (err) {

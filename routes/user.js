@@ -31,6 +31,7 @@ router.post('/login',
  router.post('/addTransaction',isLoggedIn,userController.postAddTransaction);
 
 router.get('/allTransaction',isLoggedIn,userController.getAllTransaction);
+router.post('/allTransaction',isLoggedIn,userController.postAllTransaction);
 
 router.get('/transactionBar',isLoggedIn,userController.getTransactionBar);
 router.get('/incomestats',isLoggedIn,userController.getIncomeStats);
