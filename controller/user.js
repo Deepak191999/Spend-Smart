@@ -399,6 +399,7 @@ module.exports.postUpdateTransaction= async(req,res,next)=>{
 
 module.exports.getExportData= async(req,res,next)=>{
     try {
+        
         const workbook=new exceljs.Workbook();
         const worksheet = workbook.addWorksheet("User Transaction");
         worksheet.columns =[
@@ -409,9 +410,9 @@ module.exports.getExportData= async(req,res,next)=>{
             {header:"Category", key:"category",width: 15 },
             {header:"Description", key:"description",width: 20 },
         ]
-        let counter=1;
+        
         let transactions = await transaction.find({ userId:req.user._id }).sort({date:1});
-
+        let counter=1
         transactions.forEach((item) => {
             worksheet.addRow({
                 sNo: counter,
@@ -437,3 +438,55 @@ module.exports.getExportData= async(req,res,next)=>{
         next(error)
     }
 }
+
+// module.exports.getExportData = async (req, res, next) => {
+//     try {
+//         const filteredDataStr = req.body.filteredData;
+//         if (!filteredDataStr) {
+//             throw new Error('No data provided for export');
+//         }
+//         const filteredData = JSON.parse(filteredDataStr);
+
+//         const workbook = new exceljs.Workbook();
+//         const worksheet = workbook.addWorksheet("User Transaction");
+
+//         worksheet.columns = [
+//             { header: "S no.", key: "sNo", width: 10 },
+//             { header: "Date", key: "date", width: 15 },
+//             { header: "Amount", key: "amount", width: 15 },
+//             { header: "Type", key: "type", width: 10 },
+//             { header: "Category", key: "category", width: 15 },
+//             { header: "Description", key: "description", width: 30 }
+//         ];
+
+//         filteredData.forEach((item, index) => {
+//             worksheet.addRow({
+//                 sNo: index + 1,
+//                 date: new Date(item.date), // Ensure date format is correct
+//                 amount: item.amount,
+//                 type: item.type,
+//                 category: item.category,
+//                 description: item.description
+//             });
+//         });
+
+//         worksheet.getColumn('date').eachCell((cell, rowNumber) => {
+//             if (rowNumber > 1) {
+//                 cell.numFmt = 'mm/dd/yyyy';
+//             }
+//         });
+
+//         worksheet.getRow(1).eachCell((cell) => {
+//             cell.font = { bold: true };
+//         });
+
+//         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//         res.setHeader('Content-Disposition', 'attachment; filename=user_transactions.xlsx');
+
+//         await workbook.xlsx.write(res);
+//         res.end();
+//     } catch (error) {
+//         console.log("Error in getExportData:", error);
+//         next(error);
+//     }
+// };

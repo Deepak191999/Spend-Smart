@@ -6,30 +6,98 @@
     <title>Document</title>
        <link rel="stylesheet" href="../public/partials/navbar.css">
     <style>
-       .transaction-table, .total-table {
-            width: 100%;
-            border-collapse: collapse;
-             margin-bottom: 100px;
+     body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
-        .transaction-table th, .transaction-table td,.total-table th, .total-table td {
+        .transaction-table, .total-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .transaction-table th, .transaction-table td, .total-table th, .total-table td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
         }
 
-        .transaction-table th, .total-table th{
+        .transaction-table th, .total-table th {
             background-color: #f2f2f2;
         }
-        h1{
+
+        h1 {
             text-align: center;
             margin-top: 30px;
         }
-        .summary{
-           margin-bottom: 50px;
+
+        .summary {
+            margin-bottom: 20px;
         }
+
        
-    
+        .filter-form {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .filter-form label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .filter-form input[type="date"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+
+        .filter-form button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .filter-form button:hover {
+            background-color: #45a049;
+        }
+
+       
+        .Export-data {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .Export-data button {
+            padding: 10px 20px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .Export-data button:hover {
+            background-color: #0077a3;
+        }
     </style>
 </head>
 <body>
@@ -53,6 +121,9 @@
             <button type="submit">Export All Data</button>
             </form>
     </div>
+
+          
+
 
     <table class="transaction-table">
         <thead>
@@ -118,6 +189,7 @@
     </table>
 
     
+   
 
 </body>
 </html>
