@@ -5,6 +5,7 @@ const transaction= require('../models/transactions')
 const User= require('../models/users')
 const bcrypt=require('bcrypt')
 const moment = require('moment');
+const exceljs= require('exceljs')
 
 
 
@@ -394,4 +395,45 @@ module.exports.postUpdateTransaction= async(req,res,next)=>{
         next(error);
     }
     
+}
+
+module.exports.getExportData= async(req,res,next)=>{
+    try {
+        const workbook=new exceljs.Workbook();
+        const worksheet = workbook.addWorksheet("User Transaction");
+        worksheet.columns =[
+            {header:"S no.", key:"sNo",width: 15 },
+            {header:"Date", key:"date",width: 15 },
+            {header:"Amount ", key:"amount",width: 15 },
+            {header:"Type", key:"type", width: 15 },
+            {header:"Category", key:"category",width: 15 },
+            {header:"Description", key:"description",width: 20 },
+        ]
+        let counter=1;
+        let transactions = await transaction.find({ userId:req.user._id }).sort({date:1});
+
+        transactions.forEach((item) => {
+            worksheet.addRow({
+                sNo: counter,
+                date: item.date,
+                amount: item.amount,
+                type: item.type,
+                category: item.category,
+                description: item.description
+            });
+            counter++;
+        });
+        worksheet.getRow(1).eachCell((cell)=>{
+            cell.font={bold:true};
+        });
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        res.setHeader('Content-Disposition', 'attachment; filename=' + 'user_transactions.xlsx');
+
+        return workbook.xlsx.write(res).then(()=>{
+            res.status(200);
+        })
+    } catch (error) {
+        console.log("error in get export DataTransfer",error);
+        next(error)
+    }
 }
