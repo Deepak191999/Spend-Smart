@@ -175,38 +175,84 @@ module.exports.postAllTransaction = async (req, res, next) => {
     }
 };
 
-module.exports.getTransactionBar= async(req,res,next)=>{
-    const userId=req.user._id;
-//  console.log("userid aya getTransactionBar",userId);
+// module.exports.getTransactionBar= async(req,res,next)=>{
+//     const userId=req.user._id;
+// //  console.log("userid aya getTransactionBar",userId);
+//     try {
+//         const userTransaction= await transaction.find({userId});
+//         let totalCredit=0;
+//         let totalDebit=0
+//         userTransaction.forEach((item)=>{
+//             if(item.type==="Credit"){
+//                 totalCredit += item.amount} 
+//             if(item.type==="Debit"){
+//                 totalDebit += item.amount}
+//         })
+//         let balance = totalCredit - totalDebit;
+//         let turnOver = totalCredit + totalDebit;
+//         let savingsRate = totalCredit > 0 ? ((balance / totalCredit) * 100).toFixed(1) : 0; 
+//         let savingsRateIsGood = (savingsRate > 20)
+//         res.render('transactionBar',{
+//             transactions:userTransaction,
+//             totalCredit,
+//             totalDebit,
+//             turnOver,
+//             balance,
+//             savingsRate,
+//             savingsRateIsGood
+//         })
+//     } catch (error) {
+//         console.log("error getting all transaction");
+//         next(error)
+//     }
+
+// }
+
+
+module.exports.getTransactionBar = async (req, res, next) => {
+    const userId = req.user._id;
     try {
-        const userTransaction= await transaction.find({userId});
-        let totalCredit=0;
-        let totalDebit=0
-        userTransaction.forEach((item)=>{
-            if(item.type==="Credit"){
-                totalCredit += item.amount} 
-            if(item.type==="Debit"){
-                totalDebit += item.amount}
-        })
-        let balance=totalCredit-totalDebit;
-        let turnOver=totalCredit+totalDebit;
-        let savingsRate = totalCredit > 0 ? ((balance / totalCredit) * 100).toFixed(1) : 0;
-        let savingsRateIsGood = (savingsRate > 20)
-        res.render('transactionBar',{
-            transactions:userTransaction,
+        const userTransaction = await transaction.find({ userId });
+        let totalCredit = 0;
+        let totalDebit = 0;
+
+        // Calculate total credit and debit
+        userTransaction.forEach((item) => {
+            if (item.type === "Credit") {
+                totalCredit += item.amount;
+            }
+            if (item.type === "Debit") {
+                totalDebit += item.amount;
+            }
+        });
+
+        let balance = totalCredit - totalDebit;
+        let turnOver = totalCredit + totalDebit;
+
+        // Avoid division by zerolet savingsRate;
+        let savingsRate;
+            if (totalCredit > 0) {
+                savingsRate = ((balance / totalCredit) * 100).toFixed(1);
+            } else {
+                savingsRate = 0;
+            }
+        let savingsRateIsGood = (savingsRate > 20);
+
+        res.render('transactionBar', {
+            transactions: userTransaction,
             totalCredit,
             totalDebit,
             turnOver,
             balance,
             savingsRate,
             savingsRateIsGood
-        })
+        });
     } catch (error) {
-        console.log("error getting all transaction");
-        next(error)
+        console.log("Error getting all transactions", error);
+        next(error);
     }
+};
 
-}
 
 
 module.exports.getIncomeStats=async (req,res,next)=>{
