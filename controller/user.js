@@ -109,7 +109,7 @@ module.exports.getAllTransaction = async (req, res, next) => {
 
         let balance = totalCredit - totalDebit;
         
-        res.render('alltransaction', {
+        res.render('alltransaction', { 
             transactions: userTransactions,
             totalCredit,
             totalDebit,
