@@ -8,18 +8,18 @@ passport.use(
     try {
       let user = await User.findOne({ username });
       if (!user) {
-        return done(null, false);
+        return done(null, false, { message: 'Incorrect username.' });
         
       }
       bcrypt.compare(password, user.password, function (err, result) {
         if (err) {
           return done(err);
-        } else if (result == false) return done(null, false);
+        } else if (result == false) return done(null, false, { message: 'Incorrect password.' });
         done(null, user);
       });
     } catch (error) {
       if (err) {
-        return done(err);
+        return done(error);
       }
     }
   })

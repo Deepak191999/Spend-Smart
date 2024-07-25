@@ -1,33 +1,21 @@
-
 const express = require('express');
-const hbs = require('hbs');
 const path = require('path');
-require('dotenv').config()
+require('dotenv').config();
 const session = require('express-session');
 const passport = require('passport');
 const mongoose = require('mongoose');
+const cors = require('cors'); // Import cors
 const app = express();
 const PORT = 4444;
-const moment = require('moment');
 
+// CORS configuration
+app.use(cors({
+    origin: 'http://localhost:3000', // React frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    credentials: true // Allow cookies to be sent/received
+  }));
 
 app.use(express.static(path.join(__dirname, 'public')));
-// View engine setup
-app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'views'));
-
-// Register the partials directory
-hbs.registerPartials(path.join(__dirname, 'views/partials'));
-hbs.registerHelper('json', function(context) {
-  return JSON.stringify(context);
-});
-hbs.registerHelper('eq', function(v1, v2) {
-  return v1 === v2;
-});
-
-hbs.registerHelper('moment', function(date, format) {
-  return moment(date).format(format);
-});
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -36,23 +24,36 @@ app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true 
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Initialize passport
+require('./authentication/passport');
 
-require('./authentication/passport'); 
-
+// Use routes directly
 app.use('/', require('./routes/user'));
 
-
+// Handle 404
 app.use((req, res) => {
-  res.render("404");
+    res.status(404).json({ message: 'Page not found' });
 });
 
+// Connect to MongoDB and start server
 mongoose
-  .connect(process.env.MONGODB_URL)
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`http://localhost:` + PORT);
+    .connect(process.env.MONGODB_URL)
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server running at http://localhost:${PORT}`);
+        });
+    })
+    .catch((e) => {
+        console.log("Error connecting to the database:", e);
     });
-  })
-  .catch((e) => {
-    console.log("error fetching database");
-  });
+
+
+
+    
+
+
+// app.use(express.static(path.join(__dirname, 'client/build'))); //maybe use
+
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+// });

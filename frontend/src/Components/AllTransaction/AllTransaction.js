@@ -3,6 +3,7 @@ import axios from "axios";
 import { Form, Table, Button } from "react-bootstrap";
 import moment from "moment";
 import './AllTransaction.css'; // Import CSS file
+import MyNavbar from "../MyNavbar/MyNavbar";
 
 const AllTransaction = () => {
   const [transactions, setTransactions] = useState([]);
@@ -57,6 +58,9 @@ const AllTransaction = () => {
   };
 
   return (
+    <>
+        <MyNavbar />
+  
     <div className="container">
       <h1 className="text-center my-4">Your All Transactions</h1>
 
@@ -161,6 +165,7 @@ const AllTransaction = () => {
         </tbody>
       </Table> */}
     </div>
+    </>
   );
 };
 

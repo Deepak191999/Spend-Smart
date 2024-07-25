@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './TransactionBar.module.css';
+import MyNavbar from '../MyNavbar/MyNavbar';
 
 const TransactionBar = ({ totalCredit = 0, totalDebit = 0, turnOver = 0, savingsRate = 0, savingsRateIsGood = false }) => {
   useEffect(() => {
@@ -41,6 +42,9 @@ const TransactionBar = ({ totalCredit = 0, totalDebit = 0, turnOver = 0, savings
   }, [totalCredit, totalDebit]);
 
   return (
+    <>
+    <MyNavbar/>
+  
     <div className="container mt-5">
       <h2 className="text-center mb-4">Total Turn Over: {turnOver}</h2>
       <div className="row justify-content-center mb-4">
@@ -74,6 +78,7 @@ const TransactionBar = ({ totalCredit = 0, totalDebit = 0, turnOver = 0, savings
         <h2 className="text-center">You need to save more money. Try to increase your savings rate to at least 20% of your income.</h2>
       )}
     </div>
+    </>
   );
 };
 

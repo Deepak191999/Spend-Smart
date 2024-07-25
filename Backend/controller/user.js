@@ -8,98 +8,137 @@ const moment = require('moment');
 const exceljs= require('exceljs')
 
 
-
+//done 1
 module.exports.getHome= (req,res,next)=>{
-    if(req.user){return res.redirect('/profile')}
-    res.render('home')
+    if (req.user) {
+        // Redirect with status code 302 (Found)
+        return res.redirect(302, '/profile');
+      }
+    res.status(200).json({ message: 'Welcome to the Home Page' });
 }
 
+//done 1
 module.exports.getLogin= (req,res,next)=>{
-    if(req.user){return res.redirect('/profile')}
-    res.render('login')
+    if (req.user) {
+        // Redirect with status code 302 (Found)
+        return res.redirect(302, '/profile');
+      }
+      // Return JSON response with status code 200 (OK)
+      res.status(200).json({ message: 'Please log in' });
 }
 
+//done 1
 module.exports.getSignup= (req,res,next)=>{
-    if(req.user){return res.redirect('/profile')}
-    res.render('signup')
+    if (req.user) {
+        // Redirect with status code 302 (Found)
+        return res.redirect(302, '/profile');
+      }
+      // Return JSON response with status code 200 (OK)
+      res.status(200).json({ message: 'Please sign up' });
 
 }
 
 
-
+//done 1
 module.exports.postSignup= async(req,res,next)=>{
-    if(req.user){return res.redirect('/profile')}
-    const {username,password}= req.body;
-    let user= await User.findOne({username})
-    if(user){
-        return res.render('signup',{
-            msg:"Username exists choose diff name"
-        })
-    }
-const saltRounds=10;
-    bcrypt.hash(password, saltRounds,async function(err, hash) {
-        user=new User({
-            username,
-            password:hash
-        })
-
-        await user.save()
-        res.redirect('/login')
-    });
+    if (req.user) {
+        // Redirect with status code 302 (Found) if user is already logged in
+        return res.redirect(302, '/profile');
+      }
     
-
+      const { username, password } = req.body;
+      
+      try {
+        // Check if the user already exists
+        let user = await User.findOne({ username });
+        if (user) {
+          // Send JSON response with status code 400 (Bad Request) if username exists
+          return res.status(400).json({ message: 'Username exists, choose a different name' });
+        }
+    
+        // Hash the password
+        const saltRounds = 10;
+        bcrypt.hash(password, saltRounds, async (err, hash) => {
+          if (err) {
+            // Send JSON response with status code 500 (Internal Server Error) if hashing fails
+            return res.status(500).json({ message: 'Error hashing password' });
+          }
+    
+          // Create new user
+          user = new User({
+            username,
+            password: hash,
+          });
+    
+          // Save the user to the database
+          await user.save();
+          
+          // Send JSON response with status code 201 (Created) after successful signup
+          res.status(201).json({ message: 'Signup successful, please log in' });
+        });
+      } catch (error) {
+        // Send JSON response with status code 500 (Internal Server Error) if any error occurs
+        res.status(500).json({ message: 'Server error', error });
+      }
 }
 
+//done 1
 module.exports.getProfile=(req,res,next)=>{
-    // if(!req.user){return res.redirect('/login')}
-    res.render('profile',{
-        user:req.user
-        
-    })
+    if (!req.user) {
+        // Send JSON response with status code 401 (Unauthorized) if the user is not logged in
+        return res.status(401).json({ message: 'Unauthorized access. Please log in.' });
+      }
+    
+      // Send JSON response with user data if logged in
+      res.status(200).json({ user: req.user });
 }
 
 
-//done
+//done 1
 module.exports.postAddTransaction = async(req,res,next)=>{
-const {amount,type,creditCategory,debitCategory,description,date}=req.body;
-const userId = req.user ? req.user._id : null;
-// console.log("Request Body:", req.body);
-//   console.log("User Id:", userId);
-  if (!userId) {
-    console.error("User is not authenticated");
-    return res.status(401).send("User is not authenticated");
-  }
-
-const category = type === "Credit" ? creditCategory : debitCategory;
-try {
-    const newTransaction = new transaction({
+    const { amount, type, creditCategory, debitCategory, description, date } = req.body;
+    const userId = req.user ? req.user._id : null;
+  
+    // Check if the user is authenticated
+    if (!userId) {
+      console.error("User is not authenticated");
+      return res.status(401).json({ message: "User is not authenticated" });
+    }
+  
+    const category = type === "Credit" ? creditCategory : debitCategory;
+  
+    try {
+      const newTransaction = new Transaction({
         userId,
         amount,
         type,
         category,
         description,
-        date
+        date,
       });
   
       await newTransaction.save();
       console.log("Transaction saved successfully:", newTransaction);
   
       res.status(201).json({ message: 'Transaction saved successfully', transaction: newTransaction });
-} catch (error) {
-    console.error("Error saving transaction:", error);
-    next(error)
-}
+    } catch (error) {
+      console.error("Error saving transaction:", error);
+      res.status(500).json({ message: 'Error saving transaction', error: error.message });
+    }
 }
 
-//done
+//done 1
 module.exports.getAllTransaction = async (req, res, next) => {
-    const userId = req.user._id;
-    
+    const userId = req.user._id; // Get user ID from the authenticated user
+
     try {
-        const userTransactions = await transaction.find({ userId }).sort({date:1});
+        // Fetch all transactions for the authenticated user
+        const userTransactions = await Transaction.find({ userId }).sort({ date: 1 });
 
         let totalCredit = 0;
         let totalDebit = 0;
+
+        // Calculate total credit and debit
         userTransactions.forEach((item) => {
             if (item.type === 'Credit') {
                 totalCredit += item.amount;
@@ -109,8 +148,10 @@ module.exports.getAllTransaction = async (req, res, next) => {
             }
         });
 
-        let balance = totalCredit - totalDebit;
-        
+        // Calculate balance
+        const balance = totalCredit - totalDebit;
+
+        // Send response with transaction data
         res.status(200).json({
             transactions: userTransactions,
             totalCredit,
@@ -118,38 +159,32 @@ module.exports.getAllTransaction = async (req, res, next) => {
             balance
         });
     } catch (error) {
-        console.log("Error getting all transactions", error);
+        console.error("Error getting all transactions:", error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
 
-
+//done 1
 module.exports.postAllTransaction = async (req, res, next) => {
     const userId = req.user._id;
     const { startDate, endDate } = req.body;
 
     try {
-        
-        const userTransactions = await transaction.find({ userId }).sort({date:1});
+        const userTransactions = await Transaction.find({ userId }).sort({ date: 1 });
 
         let filteredTransactions = userTransactions;
-        let start;
-        let end
+        let start, end;
         if (startDate && endDate) {
             start = moment(startDate, 'YYYY-MM-DD');
-             end = moment(endDate, 'YYYY-MM-DD').endOf('day'); 
-            console.log("start",start);
-            console.log("End",end);
+            end = moment(endDate, 'YYYY-MM-DD').endOf('day');
 
             filteredTransactions = userTransactions.filter((item) => {
-                const transactionDate = moment(item.date, 'DD MMM YYYY');
-                // console.log("transactionDate",transactionDate);
+                const transactionDate = moment(item.date, 'YYYY-MM-DD');
                 return transactionDate.isBetween(start, end, null, '[]');
             });
         }
 
-        
         let totalCredit = 0;
         let totalDebit = 0;
         filteredTransactions.forEach((item) => {
@@ -161,67 +196,37 @@ module.exports.postAllTransaction = async (req, res, next) => {
             }
         });
 
-        // Calculate balance
-        let balance = totalCredit - totalDebit;
+        const balance = totalCredit - totalDebit;
 
-        // Render the alltransaction view with filtered transactions and totals
-        res.render('alltransaction', {
+        // Send JSON response with filtered transactions and totals
+        res.status(200).json({
             transactions: filteredTransactions,
             totalCredit,
             totalDebit,
             balance,
-            start,
-            end
+            start: start ? start.format('YYYY-MM-DD') : null,
+            end: end ? end.format('YYYY-MM-DD') : null
         });
     } catch (error) {
-        console.log("Error filtering transactions", error);
-        next(error);
+        console.error('Error filtering transactions:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
-// module.exports.getTransactionBar= async(req,res,next)=>{
-//     const userId=req.user._id;
-// //  console.log("userid aya getTransactionBar",userId);
-//     try {
-//         const userTransaction= await transaction.find({userId});
-//         let totalCredit=0;
-//         let totalDebit=0
-//         userTransaction.forEach((item)=>{
-//             if(item.type==="Credit"){
-//                 totalCredit += item.amount} 
-//             if(item.type==="Debit"){
-//                 totalDebit += item.amount}
-//         })
-//         let balance = totalCredit - totalDebit;
-//         let turnOver = totalCredit + totalDebit;
-//         let savingsRate = totalCredit > 0 ? ((balance / totalCredit) * 100).toFixed(1) : 0; 
-//         let savingsRateIsGood = (savingsRate > 20)
-//         res.render('transactionBar',{
-//             transactions:userTransaction,
-//             totalCredit,
-//             totalDebit,
-//             turnOver,
-//             balance,
-//             savingsRate,
-//             savingsRateIsGood
-//         })
-//     } catch (error) {
-//         console.log("error getting all transaction");
-//         next(error)
-//     }
-
-// }
 
 
+//done 1
 module.exports.getTransactionBar = async (req, res, next) => {
     const userId = req.user._id;
+
     try {
-        const userTransaction = await transaction.find({ userId });
+        const userTransactions = await Transaction.find({ userId });
+
         let totalCredit = 0;
         let totalDebit = 0;
 
         // Calculate total credit and debit
-        userTransaction.forEach((item) => {
+        userTransactions.forEach((item) => {
             if (item.type === "Credit") {
                 totalCredit += item.amount;
             }
@@ -233,17 +238,18 @@ module.exports.getTransactionBar = async (req, res, next) => {
         let balance = totalCredit - totalDebit;
         let turnOver = totalCredit + totalDebit;
 
-        // Avoid division by zerolet savingsRate;
+        // Avoid division by zero
         let savingsRate;
-            if (totalCredit > 0) {
-                savingsRate = ((balance / totalCredit) * 100).toFixed(1);
-            } else {
-                savingsRate = 0;
-            }
+        if (totalCredit > 0) {
+            savingsRate = ((balance / totalCredit) * 100).toFixed(1);
+        } else {
+            savingsRate = 0;
+        }
         let savingsRateIsGood = (savingsRate > 20);
 
-        res.render('transactionBar', {
-            transactions: userTransaction,
+        // Send JSON response with data
+        res.status(200).json({
+            transactions: userTransactions,
             totalCredit,
             totalDebit,
             turnOver,
@@ -252,112 +258,107 @@ module.exports.getTransactionBar = async (req, res, next) => {
             savingsRateIsGood
         });
     } catch (error) {
-        console.log("Error getting all transactions", error);
-        next(error);
+        console.error("Error getting transactions:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
 
-
+//done 1
 module.exports.getIncomeStats=async (req,res,next)=>{
-    const userId=req.user._id;
-    // console.log("userid aya getIncomeStats",userId);
+  
+    const userId = req.user._id;
 
     try {
-        const userTransaction= await transactions.find({userId,type:'Credit'})
-        let totalIncome=0;
-        let incomeCategory={}
-        // console.log("userTransaction income",userTransaction)
+        const userTransactions = await Transaction.find({ userId, type: 'Credit' });
 
-        userTransaction.forEach((item)=>{
-            totalIncome+=item.amount;
-            if(incomeCategory[item.category]){
-                incomeCategory[item.category] += item.amount
-            }
-            else{
-                incomeCategory[item.category]= item.amount
-            }
+        let totalIncome = 0;
+        let incomeCategory = {};
 
-        })
-        // console.log("incomeCategory",incomeCategory);
-        let incomePercentage={};
-        for (let ctgry in incomeCategory) {
-            incomePercentage[ctgry]=((incomeCategory[ctgry]/totalIncome)*100).toFixed(1);
+        userTransactions.forEach((item) => {
+            totalIncome += item.amount;
+            if (incomeCategory[item.category]) {
+                incomeCategory[item.category] += item.amount;
+            } else {
+                incomeCategory[item.category] = item.amount;
+            }
+        });
+
+        let incomePercentage = {};
+        for (let category in incomeCategory) {
+            incomePercentage[category] = ((incomeCategory[category] / totalIncome) * 100).toFixed(1);
         }
-        // console.log("incomePercentage",incomePercentage);
 
-        res.render('incomeStats',{
+        // Send JSON response with data
+        res.status(200).json({
             totalIncome,
             incomePercentage
-        })
+        });
     } catch (error) {
-        console.log("Error getting income statistics:", error);
-        next(error);
+        console.error("Error getting income statistics:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
-
+//done 1
 module.exports.getExpenseStats=async (req,res,next)=>{
-    const userId=req.user._id;
-    // console.log("userid aya getExpenseStats",userId);
+    const userId = req.user._id;
 
     try {
-        const userTransaction= await transactions.find({userId,type:'Debit'})
+        const userTransactions = await Transaction.find({ userId, type: 'Debit' });
+
         let totalExpense = 0;
-        let expenseCategory ={}
-        // console.log("userTransaction Expense",userTransaction)
+        let expenseCategory = {};
 
-        userTransaction.forEach((item)=>{
-             totalExpense += item.amount;
-            if(expenseCategory[item.category]){
-                expenseCategory[item.category] += item.amount
+        userTransactions.forEach((item) => {
+            totalExpense += item.amount;
+            if (expenseCategory[item.category]) {
+                expenseCategory[item.category] += item.amount;
+            } else {
+                expenseCategory[item.category] = item.amount;
             }
-            else{
-                expenseCategory[item.category] = item.amount
-            }
+        });
 
-        })
-        // console.log("expenseCategory",expenseCategory);
-        let expensePercentage={};
-        for (let ctgry in expenseCategory) {
-            expensePercentage[ctgry]=((expenseCategory[ctgry]/totalExpense)*100).toFixed(1);
+        let expensePercentage = {};
+        for (let category in expenseCategory) {
+            expensePercentage[category] = ((expenseCategory[category] / totalExpense) * 100).toFixed(1);
         }
-        // console.log("expensePercentage",expensePercentage);
 
-        res.render('expenseStats',{
+        // Send JSON response with data
+        res.status(200).json({
             totalExpense,
             expensePercentage
-        })
+        });
     } catch (error) {
-        console.log("Error getting income statistics:", error);
-        next(error);
+        console.error("Error getting expense statistics:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
 
-
+//done 1
 module.exports.postDeleteTransaction= async(req,res,next)=>{
     const transactionId = req.params.id;
     const userId = req.user._id;
-    // console.log("transactionId",transactionId);
-    // console.log("userId",userId);
 
     try {
-        const userTransaction= await transactions.find({_id:transactionId,userId})
-       console.log('userTransaction',userTransaction);
+        // Find the transaction to delete
+        const userTransaction = await Transaction.findOne({ _id: transactionId, userId });
+
         if (!userTransaction) {
-           console.log('Transaction not found for deletion.');
-            return res.status(404).send('Transaction not found.');
+            console.log('Transaction not found for deletion.');
+            return res.status(404).json({ message: 'Transaction not found.' });
         }
-        await transactions.deleteOne({_id:transactionId});
-        
-        const userNewTransactions = await transaction.find({ userId }).sort({ date: 1 });
 
-        console.log("Transaction deleted");
+        // Delete the transaction
+        await Transaction.deleteOne({ _id: transactionId });
 
+        // Fetch the updated transactions
+        const userNewTransactions = await Transaction.find({ userId }).sort({ date: 1 });
 
         let totalCredit = 0;
         let totalDebit = 0;
+
         userNewTransactions.forEach((item) => {
             if (item.type === 'Credit') {
                 totalCredit += item.amount;
@@ -369,8 +370,8 @@ module.exports.postDeleteTransaction= async(req,res,next)=>{
 
         let balance = totalCredit - totalDebit;
 
-        // Render the alltransaction view with updated data
-        res.render('alltransaction', {
+        // Send JSON response with updated data
+        res.status(200).json({
             transactions: userNewTransactions,
             totalCredit,
             totalDebit,
@@ -378,50 +379,62 @@ module.exports.postDeleteTransaction= async(req,res,next)=>{
         });
     } catch (error) {
         console.error('Error deleting transaction:', error);
-        next(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
+
+//done 1
 module.exports.getUpdateTransaction=async(req,res,next)=>{
     const transactionId = req.params.id;
     const userId = req.user._id;
+
     try {
-        const userTransaction= await transaction.findOne({_id:transactionId, userId})
+        const userTransaction = await Transaction.findOne({ _id: transactionId, userId });
         if (!userTransaction) {
             console.log('Transaction not found for updation.');
-            return res.status(404).send('Transaction not found.');
+            return res.status(404).json({ message: 'Transaction not found.' });
         }
-        
-        res.render("updateTransaction", {
-            transaction: userTransaction,
-          });
+
+        res.status(200).json(userTransaction);
     } catch (error) {
-        next(error);
+        console.error('Error fetching transaction:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
+//done 1
 module.exports.postUpdateTransaction= async(req,res,next)=>{
-    const {amount,type, creditCategory, debitCategory,description,date}=req.body;
+    const { amount, type, creditCategory, debitCategory, description, date } = req.body;
     const transactionId = req.params.id;
     const userId = req.user ? req.user._id : null;
-    // console.log("Request Body:", req.body);
-    //   console.log("User Id:", userId);
 
     try {
-        let userTransaction= await transaction.findOne({_id:transactionId,userId})
-       
-        userTransaction.amount=amount;
-        userTransaction.type=type;
+        // Validate the user
+        if (!userId) {
+            return res.status(401).json({ message: 'User is not authenticated.' });
+        }
+
+        // Find the transaction
+        let userTransaction = await Transaction.findOne({ _id: transactionId, userId });
+        if (!userTransaction) {
+            return res.status(404).json({ message: 'Transaction not found.' });
+        }
+
+        // Update transaction details
+        userTransaction.amount = amount;
+        userTransaction.type = type;
         userTransaction.category = type === 'Credit' ? creditCategory : debitCategory;
-        userTransaction.description=description;
-        userTransaction.date=date;
+        userTransaction.description = description;
+        userTransaction.date = date;
 
-     await  userTransaction.save()
-        
+        // Save the updated transaction
+        await userTransaction.save();
 
+        // Fetch all transactions to recalculate totals
+        const userNewTransactions = await Transaction.find({ userId }).sort({ date: 1 });
 
-        const userNewTransactions = await transaction.find({ userId }).sort({ date: 1 });
-
+        // Calculate totals
         let totalCredit = 0;
         let totalDebit = 0;
         userNewTransactions.forEach((item) => {
@@ -434,7 +447,8 @@ module.exports.postUpdateTransaction= async(req,res,next)=>{
 
         let balance = totalCredit - totalDebit;
 
-        res.render('alltransaction', {
+        // Respond with updated data
+        res.status(200).json({
             transactions: userNewTransactions,
             totalCredit,
             totalDebit,
@@ -442,27 +456,34 @@ module.exports.postUpdateTransaction= async(req,res,next)=>{
         });
     } catch (error) {
         console.error('Error updating transaction:', error);
-        next(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
     
 }
 
+
+//done 1
 module.exports.getExportData= async(req,res,next)=>{
     try {
-        
-        const workbook=new exceljs.Workbook();
+        // Create a new workbook and worksheet
+        const workbook = new exceljs.Workbook();
         const worksheet = workbook.addWorksheet("User Transaction");
-        worksheet.columns =[
-            {header:"S no.", key:"sNo",width: 15 },
-            {header:"Date", key:"date",width: 15 },
-            {header:"Amount ", key:"amount",width: 15 },
-            {header:"Type", key:"type", width: 15 },
-            {header:"Category", key:"category",width: 15 },
-            {header:"Description", key:"description",width: 20 },
-        ]
-        
-        let transactions = await transaction.find({ userId:req.user._id }).sort({date:1});
-        let counter=1
+
+        // Define columns
+        worksheet.columns = [
+            { header: "S No.", key: "sNo", width: 15 },
+            { header: "Date", key: "date", width: 15 },
+            { header: "Amount", key: "amount", width: 15 },
+            { header: "Type", key: "type", width: 15 },
+            { header: "Category", key: "category", width: 15 },
+            { header: "Description", key: "description", width: 20 },
+        ];
+
+        // Fetch transactions
+        let transactions = await Transaction.find({ userId: req.user._id }).sort({ date: 1 });
+        let counter = 1;
+
+        // Add rows
         transactions.forEach((item) => {
             worksheet.addRow({
                 sNo: counter,
@@ -474,22 +495,30 @@ module.exports.getExportData= async(req,res,next)=>{
             });
             counter++;
         });
-        worksheet.getRow(1).eachCell((cell)=>{
-            cell.font={bold:true};
-        });
-        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        res.setHeader('Content-Disposition', 'attachment; filename=' + 'user_transactions.xlsx');
 
-        return workbook.xlsx.write(res).then(()=>{
-            res.status(200);
-        })
+        // Style the header row
+        worksheet.getRow(1).eachCell((cell) => {
+            cell.font = { bold: true };
+        });
+
+        // Set headers for file download
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=user_transactions.xlsx');
+
+        // Write file to response
+        await workbook.xlsx.write(res);
+        res.status(200).end();
     } catch (error) {
-        console.log("error in get export DataTransfer",error);
-        next(error)
+        console.error("Error exporting data:", error);
+        next(error);
     }
 }
 
+
+
+
 // module.exports.getExportData = async (req, res, next) => {
+
 //     try {
 //         const filteredDataStr = req.body.filteredData;
 //         if (!filteredDataStr) {
@@ -540,3 +569,38 @@ module.exports.getExportData= async(req,res,next)=>{
 //         next(error);
 //     }
 // };
+
+
+
+// module.exports.getTransactionBar= async(req,res,next)=>{
+//     const userId=req.user._id;
+// //  console.log("userid aya getTransactionBar",userId);
+//     try {
+//         const userTransaction= await transaction.find({userId});
+//         let totalCredit=0;
+//         let totalDebit=0
+//         userTransaction.forEach((item)=>{
+//             if(item.type==="Credit"){
+//                 totalCredit += item.amount} 
+//             if(item.type==="Debit"){
+//                 totalDebit += item.amount}
+//         })
+//         let balance = totalCredit - totalDebit;
+//         let turnOver = totalCredit + totalDebit;
+//         let savingsRate = totalCredit > 0 ? ((balance / totalCredit) * 100).toFixed(1) : 0; 
+//         let savingsRateIsGood = (savingsRate > 20)
+//         res.render('transactionBar',{
+//             transactions:userTransaction,
+//             totalCredit,
+//             totalDebit,
+//             turnOver,
+//             balance,
+//             savingsRate,
+//             savingsRateIsGood
+//         })
+//     } catch (error) {
+//         console.log("error getting all transaction");
+//         next(error)
+//     }
+
+// }
