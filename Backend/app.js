@@ -13,8 +13,8 @@ const moment = require('moment');
 
 app.use(express.static(path.join(__dirname, 'public')));
 // View engine setup
-// app.set('view engine', 'hbs');
-// app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
 
 // Register the partials directory
 hbs.registerPartials(path.join(__dirname, 'views/partials'));

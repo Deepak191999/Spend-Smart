@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Row, Col, Container, FormGroup, FormLabel, FormControl, Button } from 'react-bootstrap';
+import '../Profile/Profile.css'
 
 const Profile = ({ user }) => {
   const [type, setType] = useState('Credit'); // Set default type

@@ -58,6 +58,8 @@ module.exports.getProfile=(req,res,next)=>{
     })
 }
 
+
+//done
 module.exports.postAddTransaction = async(req,res,next)=>{
 const {amount,type,creditCategory,debitCategory,description,date}=req.body;
 const userId = req.user ? req.user._id : null;
@@ -82,14 +84,14 @@ try {
       await newTransaction.save();
       console.log("Transaction saved successfully:", newTransaction);
   
-      res.redirect('/alltransaction');
+      res.status(201).json({ message: 'Transaction saved successfully', transaction: newTransaction });
 } catch (error) {
     console.error("Error saving transaction:", error);
     next(error)
 }
 }
 
-
+//done
 module.exports.getAllTransaction = async (req, res, next) => {
     const userId = req.user._id;
     
@@ -109,7 +111,7 @@ module.exports.getAllTransaction = async (req, res, next) => {
 
         let balance = totalCredit - totalDebit;
         
-        res.render('alltransaction', { 
+        res.status(200).json({
             transactions: userTransactions,
             totalCredit,
             totalDebit,
@@ -117,9 +119,11 @@ module.exports.getAllTransaction = async (req, res, next) => {
         });
     } catch (error) {
         console.log("Error getting all transactions", error);
-        next(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+
 
 module.exports.postAllTransaction = async (req, res, next) => {
     const userId = req.user._id;

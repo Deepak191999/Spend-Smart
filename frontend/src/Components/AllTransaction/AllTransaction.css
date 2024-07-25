@@ -1,0 +1,47 @@
+/* AllTransactions.css */
+.transactions-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .totals {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+  }
+  
+  .income {
+    color: green;
+  }
+  
+  .expense {
+    color: red;
+  }
+  
+  .transactions-list {
+    margin-top: 20px;
+  }
+  
+  .transactions-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .transactions-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .error {
+    color: red;
+    text-align: center;
+  }
+  
