@@ -1,7 +1,7 @@
 // const mongoose=require('mongoose')
 
 const transactions = require('../models/transactions')
-const transaction= require('../models/transactions')
+const Transaction= require('../models/transactions')
 const User= require('../models/users')
 const bcrypt=require('bcrypt')
 const moment = require('moment');
@@ -337,7 +337,7 @@ module.exports.getExpenseStats=async (req,res,next)=>{
 
 
 //done 1
-module.exports.postDeleteTransaction= async(req,res,next)=>{
+module.exports.getDeleteTransaction= async(req,res,next)=>{
     const transactionId = req.params.id;
     const userId = req.user._id;
 

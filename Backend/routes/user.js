@@ -12,11 +12,18 @@ router.get('/login',userController.getLogin)
 router.get('/signup',userController.getSignup)
 router.get('/profile',isLoggedIn,userController.getProfile)
 
-router.get('/logout', function(req, res, next){
-    req.logout(function(err) {
-      if (err) { return next(err); }
-      res.json({ message: 'Logged out successfully' });
-    });
+router.post('/logout', function(req, res, next){
+    // req.logout(function(err) {
+    //   if (err) { return next(err); }
+    //   res.json({ message: 'Logged out successfully' });
+    // });
+
+    req.logout((err) => {
+      if (err) {
+          return res.status(500).json({ message: 'Error logging out' });
+      }
+      res.status(200).json({ message: 'Logout successful' });
+  });
   });
 
 router.post('/signup',userController.postSignup)
@@ -54,7 +61,7 @@ router.get('/transactionBar',isLoggedIn,userController.getTransactionBar);
 router.get('/incomestats',isLoggedIn,userController.getIncomeStats);
 router.get('/expensestats',isLoggedIn,userController.getExpenseStats);
 
-router.post('/deletetransaction/:id',isLoggedIn,userController.postDeleteTransaction);
+router.get('/deletetransaction/:id',isLoggedIn,userController.getDeleteTransaction);
 
 
 router.get('/updatetransaction/:id', isLoggedIn, userController.getUpdateTransaction);
