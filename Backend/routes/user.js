@@ -51,6 +51,9 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
+router.get('/checkAuth', isLoggedIn, (req, res) => {
+  res.json({ authenticated: true });
+});
 
  router.post('/addTransaction',isLoggedIn,userController.postAddTransaction);
 
