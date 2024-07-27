@@ -1,63 +1,89 @@
-/* Signup.css */
-
+/* Overall container styles */
 .signup-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .signup-container h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .signup-container form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .signup-container input[type="text"],
-  .signup-container input[type="password"] {
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .signup-container button {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .signup-container button:hover {
-    background-color: #45a049;
-  }
-  
-  .signup-container .error-message {
-    color: red;
-    text-align: center;
-    margin-top: 10px;
-  }
-  
-  .signup-container .login-link {
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .signup-container .login-link a {
-    color: #4CAF50;
-    text-decoration: none;
-  }
-  
-  .signup-container .login-link a:hover {
-    text-decoration: underline;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f0f4f8; /* Light background color */
+  font-family: 'Arial', sans-serif; /* Font styling */
+}
+
+/* Header styles */
+.signup-header {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333; /* Dark text color */
+}
+
+/* Form styles */
+.signup-form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  width: 300px; /* Fixed width for the form */
+}
+
+/* Form group styles */
+.form-group {
+  margin-bottom: 15px; /* Spacing between form elements */
+}
+
+/* Label styles */
+.form-label {
+  font-weight: bold;
+  margin-bottom: 5px; /* Space below labels */
+  color: #555; /* Slightly lighter text color */
+}
+
+/* Input styles */
+.form-input {
+  width: 100%; /* Full width input */
+  padding: 10px;
+  border: 1px solid #ccc; /* Light border */
+  border-radius: 4px; /* Rounded corners */
+  transition: border 0.3s; /* Smooth transition for border */
+}
+
+/* Input focus styles */
+.form-input:focus {
+  border: 1px solid #007bff; /* Blue border on focus */
+  outline: none; /* Remove default outline */
+}
+
+/* Button styles */
+.submit-button {
+  background-color: #007bff; /* Bootstrap primary color */
+  color: white; /* White text */
+  border: none;
+  padding: 10px;
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer;
+  width: 100%; /* Full width button */
+  transition: background-color 0.3s; /* Smooth background transition */
+}
+
+/* Button hover effect */
+.submit-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Error message styles */
+.error-message {
+  color: red; /* Red color for error messages */
+  margin-top: 10px; /* Space above error messages */
+}
+
+/* Link styles */
+.login-link {
+  margin-top: 10px; /* Space above login link */
+  color: #007bff; /* Bootstrap primary color */
+  text-decoration: none; /* No underline */
+  transition: color 0.3s; /* Smooth color transition */
+}
+
+/* Link hover effect */
+.login-link:hover {
+  color: #0056b3; /* Darker blue on hover */
+}

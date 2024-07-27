@@ -4,13 +4,6 @@ import { Navigate } from 'react-router-dom';
 import useAuth from '../CustomHooks/useAuth/useAuth';
 
 
-// const ProtectedRoute = ({ element: Element, ...rest }) => {
-//   useAuth(); // Call the custom hook to check auth
-
-//   return <Route {...rest} element={<Element />} />;
-// };
-
-// export default ProtectedRoute;
 
 const ProtectedRoute = ({ element: Element }) => {
     const isAuthenticated = useAuth(); // Check authentication status

@@ -15,7 +15,7 @@ const MyNavbar = () => {
         if (response.status === 200) {
           
                 alert('Logged out successfully'); // You can replace this with a more sophisticated notification system
-                navigate('/login');
+                navigate('/');
         }
     } catch (error) {
         console.error('Error during logout:', error);
