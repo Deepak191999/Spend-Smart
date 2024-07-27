@@ -7,19 +7,6 @@ const MyNavbar = () => {
 
   const navigate = useNavigate();
 
-  // const handleLogout = async () => {
-  //   try {
-  //     const response = await axios.post('/logout', { withCredentials: true });
-  //     if (response.status === 200) {
-  //       // Optionally show a success message here
-  //       alert('Logged out successfully'); // You can replace this with a more sophisticated notification system
-  //       navigate('/login'); // Redirect to login page after successful logout
-  //     }
-  //   } catch (error) {
-  //     console.error('Logout failed:', error);
-  //     alert('Logout failed. Please try again.'); // Inform the user about the failure
-  //   }
-  // };
 
   const handleLogout = async () => {
     try {

@@ -1,4 +1,4 @@
-import MyNavbar from "./Components/MyNavbar/MyNavbar";
+
 import AllTransaction from "./Components/AllTransaction/AllTransaction";
 import Home from "./Components/Home/Home";
 import { Route, Routes } from "react-router-dom";
@@ -8,6 +8,7 @@ import IncomeStats from "./Components/IncomeStats/IncomeStats";
 import Login from "./Components/Login/Login";
 import Signup from "./Components/Signup/Signup";
 import ExpenseStats from "./Components/ExpenseStats/ExpenseStats";
+import UpdateTransaction from "./Components/UpdateTransaction/UpdateTransaction";
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/incomestats" element={<IncomeStats />} />
         <Route path="/expensestats" element={<ExpenseStats/>} />
         <Route path="/transactionbar" element={<TransactionBar />} />
+        <Route path="/updatetransaction/:id" element={<UpdateTransaction/>} />
         {/* Add more routes as needed */}
       </Routes>
     </>

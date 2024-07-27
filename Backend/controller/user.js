@@ -421,6 +421,15 @@ module.exports.postUpdateTransaction= async(req,res,next)=>{
             return res.status(404).json({ message: 'Transaction not found.' });
         }
 
+        // Validate category based on type
+        if (type === 'Credit' && !creditCategory) {
+            return res.status(400).json({ message: 'Credit category is required.' });
+        }
+
+        if (type === 'Debit' && !debitCategory) {
+            return res.status(400).json({ message: 'Debit category is required.' });
+        }
+        
         // Update transaction details
         userTransaction.amount = amount;
         userTransaction.type = type;
