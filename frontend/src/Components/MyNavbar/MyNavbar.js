@@ -30,7 +30,7 @@ const MyNavbar = () => {
       <NavLink className={styles.navLink} to="/transactionBar">Transaction Bar</NavLink>
       <NavLink className={styles.navLink} to="/incomestats">Income Stats</NavLink>
       <NavLink className={styles.navLink} to="/expensestats">Expenses Stats</NavLink>
-      <NavLink to="/chatbot">ChatBot</NavLink>
+      <NavLink  className={styles.navLink} to="/chatbot">BudgetBuddy</NavLink>
         <button className={styles.navLink} onClick={handleLogout}>Logout</button>
     </nav>
   );

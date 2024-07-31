@@ -1,4 +1,4 @@
-/* TransactionBar.module.css */
+/* TransactionBar.module.css
 :root {
     --progress-bar-width: 200px;
     --progress-bar-height: 200px;
@@ -53,4 +53,62 @@
     justify-content: center;
     padding: 20px;
   }
-  
+   */
+/* 
+   /* TransactionBar.module.css */
+
+   :root {
+    --progress-bar-width: 300px; /* Increased size */
+    --progress-bar-height: 300px; /* Increased size */
+    --font-size: 2rem; /* Font size for percentage */
+}
+
+.circularProgress {
+    width: var(--progress-bar-width);
+    height: var(--progress-bar-height);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px;
+    position: relative;
+}
+
+.innerCircle {
+    position: absolute;
+    width: calc(var(--progress-bar-width) - 40px); /* Adjusted for better padding */
+    height: calc(var(--progress-bar-height) - 40px); /* Adjusted for better padding */
+    border-radius: 50%;
+    background-color: lightgrey; /* Background color of inner circle */
+}
+
+.percentage {
+    position: absolute; /* Changed to absolute to center it */
+    font-size: var(--font-size);
+    color: rgba(0, 0, 0, 0.8);
+    text-align: center; /* Center text */
+}
+
+.Income {
+    color: green;
+}
+
+.Expense {
+    color: red;
+}
+
+.ProgressBar {
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin-top: 30px;
+}
+
+h2 {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}

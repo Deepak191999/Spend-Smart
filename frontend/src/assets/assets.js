@@ -12,6 +12,8 @@ import message_icon from './message_icon.png'
 import code_icon from './code_icon.png'
 import send_icon from './send_icon.png'
 import gemini_icon from './gemini_icon.png'
+import wallet_icon from './wallet_icon.png'
+import piggy_bank from './piggy_bank.png'
 
 export const assets = {
     history_icon,
@@ -27,5 +29,7 @@ export const assets = {
     message_icon,
     code_icon,
     send_icon,
-    gemini_icon
+    gemini_icon,
+    wallet_icon,
+    piggy_bank,
 }

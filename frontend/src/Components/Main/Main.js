@@ -16,7 +16,7 @@ const Main = () => {
   return (
     <div className="main">
       <div className="nav">
-        <p>My Gemini</p>
+        <p>Budget Buddy</p>
         <img src={assets.user_icon} alt="user_icon" />
       </div>
       <div className="main-container">
@@ -30,19 +30,19 @@ const Main = () => {
             </div>
             <div className="cards">
               <div className="card">
-                <p>Suggest beautiful place to visit in India</p>
-                <img src={assets.compass_icon} alt="compass_icon" />
-              </div>
-              <div className="card">
-                <p>Briefly summarize this concept: Urban Planning</p>
-                <img src={assets.bulb_icon} alt="compass_icon" />
-              </div>
-              <div className="card">
-                <p>BrainStrom team bonding activities for our work retreat</p>
+                <p>How can I create a monthly budget plan?</p>
                 <img src={assets.message_icon} alt="compass_icon" />
               </div>
               <div className="card">
-                <p>Improve the readibility of following code</p>
+                <p>What are some effective ways to save money?</p>
+                <img src={assets.bulb_icon} alt="compass_icon" />
+              </div>
+              <div className="card">
+                <p>Explain the benefits of investing in mutual funds</p>
+                <img src={assets.message_icon} alt="compass_icon" />
+              </div>
+              <div className="card">
+                <p>How can I reduce my monthly expenses?</p>
                 <img src={assets.code_icon} alt="compass_icon" />
               </div>
             </div>

@@ -1,8 +1,12 @@
+
+
+
 // import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
 // import 'bootstrap/dist/css/bootstrap.min.css';
-// import styles from './TransactionBar.module.css';
 // import MyNavbar from '../MyNavbar/MyNavbar';
+// import { CircularProgress, Box, Typography } from '@mui/material';
+// import styles from './TransactionBar.module.css';
 
 // const TransactionBar = () => {
 //   const [totalCredit, setTotalCredit] = useState(0); // Income
@@ -18,14 +22,18 @@
 //         const {
 //           totalCredit,
 //           totalDebit,
-//           turnOver,
 //           savingsRate,
 //           savingsRateIsGood,
 //         } = response.data;
 
+//         console.log("Total Credit:", totalCredit, "Total Debit:", totalDebit);
+
+//         // Calculate turnover
+//         const totalTurnover = totalCredit + totalDebit;
+
 //         setTotalCredit(totalCredit);
 //         setTotalDebit(totalDebit);
-//         setTurnOver(turnOver);
+//         setTurnOver(totalTurnover);
 //         setSavingsRate(savingsRate);
 //         setSavingsRateIsGood(savingsRateIsGood);
 //       } catch (error) {
@@ -36,42 +44,8 @@
 //     fetchTransactionData();
 //   }, []);
 
-//   useEffect(() => {
-//     const creditProgress = document.querySelector(`.${styles.creditProgress}`);
-//     const debitProgress = document.querySelector(`.${styles.debitProgress}`);
-
-//     const createCircularProgress = (progressBar, percentage, progressColor) => {
-//       const progressValue = progressBar.querySelector(`.${styles.percentage}`);
-//       const innerCircle = progressBar.querySelector(`.${styles.innerCircle}`);
-
-//       let startValue = 0;
-//       const endValue = Math.round(percentage);
-//       const speed = 10;
-
-//       const progress = setInterval(() => {
-//         if (startValue <= endValue) {
-//           progressValue.textContent = `${startValue}%`;
-//           progressValue.style.color = progressColor;
-//           innerCircle.style.backgroundColor = `lightgrey`;
-//           progressBar.style.background = `conic-gradient(${progressColor} ${startValue * 3.6}deg, ${progressBar.getAttribute("data-bg-color")} 0deg)`;
-//           startValue++;
-//         } else {
-//           clearInterval(progress);
-//         }
-//       }, speed);
-//     };
-
-//     if (turnOver > 0) {
-//       const creditPercentage = (totalCredit / turnOver) * 100;
-//       const debitPercentage = (totalDebit / turnOver) * 100;
-
-//       createCircularProgress(creditProgress, creditPercentage, "green");
-//       createCircularProgress(debitProgress, debitPercentage, "red");
-//     } else {
-//       createCircularProgress(creditProgress, 0, "green");
-//       createCircularProgress(debitProgress, 0, "red");
-//     }
-//   }, [totalCredit, totalDebit, turnOver]); // Add turnOver as a dependency
+//   const creditPercentage = turnOver > 0 ? (totalCredit / turnOver) * 100 : 0;
+//   const debitPercentage = turnOver > 0 ? (totalDebit / turnOver) * 100 : 0;
 
 //   return (
 //     <>
@@ -81,25 +55,39 @@
 //         <div className="row justify-content-center mb-4">
 //           <div className="col-auto">
 //             <h2 className={styles.Income}>Income: {totalCredit}</h2>
+          
 //           </div>
 //           <div className="col-auto">
 //             <h2 className={styles.Expense}>Expense: {totalDebit}</h2>
+            
 //           </div>
+          
 //         </div>
 
-//         <div className={`row justify-content-center ${styles.ProgressBar}`}>
-//           <div className="col-auto">
-//             <div className={`${styles.circularProgress} ${styles.creditProgress}`} data-bg-color="lightgrey">
-//               <div className={styles.innerCircle}></div>
-//               <p className={styles.percentage}>0%</p>
-//             </div>
-//           </div>
-//           <div className="col-auto">
-//             <div className={`${styles.circularProgress} ${styles.debitProgress}`} data-bg-color="lightgrey">
-//               <div className={styles.innerCircle}></div>
-//               <p className={styles.percentage}>0%</p>
-//             </div>
-//           </div>
+//         <div className="row justify-content-center">
+//           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px' }}>
+//             <CircularProgress
+//               variant="determinate"
+//               value={creditPercentage}
+//               size={150} // Increase the size here
+//               thickness={5}
+//               style={{ color: 'green' }}
+//             />
+//             <h2>Income</h2>
+//             <Typography variant="h6">{Math.round(creditPercentage)}%</Typography>
+//           </Box>
+
+//           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px' }}>
+//             <CircularProgress
+//               variant="determinate"
+//               value={debitPercentage}
+//               size={150} // Increase the size here
+//               thickness={5}
+//               style={{ color: 'red' }}
+//             />
+//             <h2>Expense</h2>
+//             <Typography variant="h6">{Math.round(debitPercentage)}%</Typography>
+//           </Box>
 //         </div>
 
 //         <h2 className="text-center">General Advice</h2>
@@ -121,12 +109,12 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from './TransactionBar.module.css';
+import { CircularProgress, Box, Typography } from '@mui/material';
 import MyNavbar from '../MyNavbar/MyNavbar';
+import styles from './TransactionBar.module.css';
 
 const TransactionBar = () => {
   const [totalCredit, setTotalCredit] = useState(0); // Income
@@ -160,43 +148,8 @@ const TransactionBar = () => {
     fetchTransactionData();
   }, []);
 
-  useEffect(() => {
-    const creditProgress = document.querySelector(`.${styles.creditProgress}`);
-    const debitProgress = document.querySelector(`.${styles.debitProgress}`);
-
-    const createCircularProgress = (progressBar, percentage, progressColor) => {
-      const progressValue = progressBar.querySelector(`.${styles.percentage}`);
-      const innerCircle = progressBar.querySelector(`.${styles.innerCircle}`);
-
-      let startValue = 0;
-      const endValue = Math.round(percentage);
-      const speed = 10;
-
-      const progress = setInterval(() => {
-        if (startValue <= endValue) {
-          progressValue.textContent = `${startValue}%`;
-          progressValue.style.color = progressColor;
-          innerCircle.style.backgroundColor = `lightgrey`;
-          progressBar.style.background = `conic-gradient(${progressColor} ${startValue * 3.6}deg, ${progressBar.getAttribute("data-bg-color")} 0deg)`;
-          startValue++;
-        } else {
-          clearInterval(progress);
-        }
-      }, speed);
-    };
-
-    if (turnOver > 0) {
-      const creditPercentage = (totalCredit / turnOver) * 100;
-      const debitPercentage = (totalDebit / turnOver) * 100;
-
-      createCircularProgress(creditProgress, creditPercentage, "green");
-      createCircularProgress(debitProgress, debitPercentage, "red");
-    } else {
-      createCircularProgress(creditProgress, 0, "green");
-      createCircularProgress(debitProgress, 0, "red");
-    }
-  }, [totalCredit, totalDebit, turnOver]);
-
+  const creditPercentage = turnOver > 0 ? (totalCredit / turnOver) * 100 : 0;
+  const debitPercentage = turnOver > 0 ? (totalDebit / turnOver) * 100 : 0;
   return (
     <>
       <MyNavbar />
@@ -211,19 +164,52 @@ const TransactionBar = () => {
           </div>
         </div>
 
-        <div className={`row justify-content-center ${styles.ProgressBar}`}>
-          <div className="col-auto">
-            <div className={`${styles.circularProgress} ${styles.creditProgress}`} data-bg-color="lightgrey">
-              <div className={styles.innerCircle}></div>
-              <p className={styles.percentage}>0%</p>
-            </div>
-          </div>
-          <div className="col-auto">
-            <div className={`${styles.circularProgress} ${styles.debitProgress}`} data-bg-color="lightgrey">
-              <div className={styles.innerCircle}></div>
-              <p className={styles.percentage}>0%</p>
-            </div>
-          </div>
+        <div className="row justify-content-center">
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px', position: 'relative' }}>
+            {/* Light grey background progress */}
+            <CircularProgress
+              variant="determinate"
+              value={100} // Full circle
+              size={150} // Size of the circle
+              thickness={5}
+              style={{ color: 'lightgrey' }}
+            />
+            {/* Green progress for credit */}
+            <CircularProgress
+              variant="determinate"
+              value={creditPercentage}
+              size={150} // Match the size of the background
+              thickness={5}
+              style={{ color: 'green', position: 'absolute' }} // Positioning on top
+            />
+            {/* <span>You are earning</span> */}
+            <Typography variant="h6">{Math.round(creditPercentage)}%</Typography>
+            {/* <span>of your Total Turn over</span> */}
+            <h2>Income</h2>
+
+          </Box> 
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px', position: 'relative' }}>
+            {/* Light grey background progress */}
+            <CircularProgress
+              variant="determinate"
+              value={100} // Full circle
+              size={150} // Size of the circle
+              thickness={5}
+              style={{ color: 'lightgrey' }}
+            />
+            {/* Green progress for credit */}
+            <CircularProgress
+              variant="determinate"
+              value={debitPercentage}
+              size={150} // Match the size of the background
+              thickness={5}
+              style={{ color: 'red', position: 'absolute' }} // Positioning on top
+            />
+            <Typography variant="h6">{Math.round(debitPercentage)}%</Typography>
+            <h2>Income</h2>
+
+          </Box>
         </div>
 
         <h2 className="text-center">General Advice</h2>
