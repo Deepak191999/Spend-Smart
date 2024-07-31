@@ -8,11 +8,7 @@ import MyNavbar from './Components/MyNavbar/MyNavbar'
 const AiChatComp = () => {
   return (
     <>
-    {/* <ContextProvider>
-
-    <Sidebar/>
-    <Main/>
-    </ContextProvider> */}
+   
 
 <MyNavbar />
       <ContextProvider>

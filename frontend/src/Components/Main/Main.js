@@ -24,7 +24,7 @@ const Main = () => {
           <>
             <div className="greet">
               <p>
-                <span>Hello, Dev.</span>
+                {/* <span>Hello, Dev.</span> */}
               </p>
               <p>How Can I Help You Today?</p>
             </div>
@@ -96,8 +96,8 @@ const Main = () => {
             </div>
           </div>
           <p className="bottom-info">
-            Gemini may display inaccurate info, including about people, so
-            double-check its response. Your privacy and Gemini Apps
+            Budget Buddy may display inaccurate info, including about people, so
+            double-check its response. 
           </p>
         </div>
       </div>

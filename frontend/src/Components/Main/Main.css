@@ -22,7 +22,8 @@ border-radius: 50%;
 .main .greet{
   margin: 50px 0px;  
   font-size: 56px;
-  color: #c4c7c5;
+  /* color: #c4c7c5; */
+  color: #a1df9c;
   font-weight: 500;
   padding: 20px;
 }

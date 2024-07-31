@@ -135,6 +135,7 @@ module.exports.getAllTransaction = async (req, res, next) => {
         // Fetch all transactions for the authenticated user
         const userTransactions = await Transaction.find({ userId }).sort({ date: 1 });
 
+
         let totalCredit = 0;
         let totalDebit = 0;
 

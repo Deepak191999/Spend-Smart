@@ -1,18 +1,23 @@
+
+   /* Navbar.module.css */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    background-color: #f2f2f2; /* Change this to your desired color */
-    padding: 10px;
-  }
-  
-  .navLink {
-    color: black; /* Change this to your desired color */
-    text-decoration: none;
-    padding: 8px 16px;
-  }
-  
-  .navLink:hover {
-    background-color: #ddd; /* Change this to your desired hover color */
-    color: black; /* Change this to your desired hover color */
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  background-color: #f2f2f2; /* Change this to your desired color */
+  padding: 10px;
+}
+
+.navLink {
+  color: black; /* Change this to your desired color */
+  text-decoration: none;
+  padding: 8px 16px;
+  border: none; /* Ensure no border for the button */
+  cursor: pointer; /* Pointer cursor on hover */
+  background: none; /* Ensure no background for the button */
+}
+
+.navLink:hover {
+  background-color: #ddd; /* Change this to your desired hover color */
+  border-radius: 5%;
+  color: black; /* Change this to your desired hover color */
+}

@@ -5,7 +5,9 @@ import moment from "moment";
 import './AllTransaction.css'; // Import CSS file
 import MyNavbar from "../MyNavbar/MyNavbar";
 import { useNavigate } from "react-router-dom";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-regular-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const AllTransaction = () => {
   const [transactions, setTransactions] = useState([]);
@@ -84,16 +86,7 @@ const navigate = useNavigate();
     }
   };
 
-  // const handleEdit = (transaction) => {
-  //   setEditTransactionId(transaction._id);
-  //   setEditedTransaction({
-  //     type: transaction.type,
-  //     category: transaction.category,
-  //     description: transaction.description,
-  //     amount: transaction.amount
-  //   });
-  // };
-
+  
   const handleEdit = (transactionId) => {
     navigate(`/updatetransaction/${transactionId}`);
   };
@@ -235,12 +228,12 @@ const navigate = useNavigate();
                       <td>{transaction.amount}</td>
                       <td>
                         <Button onClick={() => handleDelete(transaction._id)} variant="danger">
-                          ❌
+                        <FontAwesomeIcon icon={faTrash} />
                         </Button>
                       </td>
                       <td>
                         <Button onClick={() =>  handleEdit(transaction._id)} variant="warning">
-                          ✏️
+                        <FontAwesomeIcon icon={faEdit} />
                         </Button>
                       </td>
                     </>

@@ -32,7 +32,7 @@ function App() {
         <Route path="/expensestats" element={<ProtectedRoute element={ExpenseStats} />} />
         <Route path="/transactionbar" element={<ProtectedRoute element={TransactionBar} />} />
         <Route path="/updatetransaction/:id" element={<ProtectedRoute element={UpdateTransaction} />} />
-        <Route path="/chatbot" element={<AiChatComp />}></Route>
+        <Route path="/chatbot" element={<ProtectedRoute element={AiChatComp}/>  }/>
         
         <Route path="*" element={<Navigate to="/login" />} />
         </Routes>   
