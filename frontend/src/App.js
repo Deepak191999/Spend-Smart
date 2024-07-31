@@ -1,7 +1,7 @@
 
 import AllTransaction from "./Components/AllTransaction/AllTransaction";
 import Home from "./Components/Home/Home";
-import { BrowserRouter as Router, Route,  Routes, Navigate } from "react-router-dom";
+import {  Route,  Routes, Navigate } from "react-router-dom";
 import Profile from "./Components/Profile/Profile";
 import TransactionBar from "./Components/TransactionBar/TransactionBar";
 import IncomeStats from "./Components/IncomeStats/IncomeStats";
@@ -11,18 +11,15 @@ import ExpenseStats from "./Components/ExpenseStats/ExpenseStats";
 import UpdateTransaction from "./Components/UpdateTransaction/UpdateTransaction";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import PublicRoute from "./Components/PublicRoute";
+import AiChatComp from "./AiChatComp";
+
 
 function App() {
 
   return (
     <>
-  
-      {/* <Router> */}
+     
         <Routes>
-        {/* <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} /> */}
-
                 {/* Public Routes */}
         <Route path="/" element={<PublicRoute element={Home} restricted={true} />} />
         <Route path="/login" element={<PublicRoute element={Login} restricted={true} />} />
@@ -35,10 +32,10 @@ function App() {
         <Route path="/expensestats" element={<ProtectedRoute element={ExpenseStats} />} />
         <Route path="/transactionbar" element={<ProtectedRoute element={TransactionBar} />} />
         <Route path="/updatetransaction/:id" element={<ProtectedRoute element={UpdateTransaction} />} />
+        <Route path="/chatbot" element={<AiChatComp />}></Route>
         
         <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      {/* </Router> */}
+        </Routes>   
     </>
   );
 }
