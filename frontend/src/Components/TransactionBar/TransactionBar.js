@@ -55,7 +55,7 @@ const TransactionBar = () => {
 
         <div className="row justify-content-center d-flex">
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px', position: 'relative' }}>
-            {/* Light grey background progress */}
+            
             <CircularProgress
               variant="determinate"
               value={100} // Full circle
@@ -71,15 +71,15 @@ const TransactionBar = () => {
               thickness={5}
               style={{ color: 'green', position: 'absolute' }} // Positioning on top
             />
-            {/* <span>You are earning</span> */}
+            
             <Typography variant="h6">{Math.round(creditPercentage)}%</Typography>
-            {/* <span>of your Total Turn over</span> */}
+          
             <h2>Income</h2>
 
           </Box> 
 
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px', position: 'relative' }}>
-            {/* Light grey background progress */}
+            
             <CircularProgress
               variant="determinate"
               value={100} // Full circle
@@ -87,7 +87,7 @@ const TransactionBar = () => {
               thickness={5}
               style={{ color: 'lightgrey' }}
             />
-            {/* Green progress for credit */}
+            
             <CircularProgress
               variant="determinate"
               value={debitPercentage}

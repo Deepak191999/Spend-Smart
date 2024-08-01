@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +32,7 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container"> {/* Apply class for styling */}
+    <div className="login-container"> 
       {/* <h2 className="login-header">Login</h2> */}
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="form-group">

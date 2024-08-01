@@ -4,7 +4,7 @@ const router= express.Router()
 const passport=require('passport')
 const userController= require('../controller/user')
 const isLoggedIn= require('../middlewares/isLoggedIn')
-const isLoggedOut= require('../middlewares/isLoggedOut')
+
 
 
 router.get('/',userController.getHome)

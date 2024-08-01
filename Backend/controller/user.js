@@ -1,4 +1,3 @@
-// const mongoose=require('mongoose')
 
 const transactions = require('../models/transactions')
 const Transaction= require('../models/transactions')
@@ -11,7 +10,7 @@ const exceljs= require('exceljs')
 //done 1
 module.exports.getHome= (req,res,next)=>{
     if (req.user) {
-        // Redirect with status code 302 (Found)
+        
         return res.redirect(302, '/profile');
       }
     res.status(200).json({ message: 'Welcome to the Home Page' });
@@ -19,21 +18,17 @@ module.exports.getHome= (req,res,next)=>{
 
 //done 1
 module.exports.getLogin= (req,res,next)=>{
-    if (req.user) {
-        // Redirect with status code 302 (Found)
+    if (req.user) {        
         return res.redirect(302, '/profile');
-      }
-      // Return JSON response with status code 200 (OK)
+      }      
       res.status(200).json({ message: 'Please log in' });
 }
 
 //done 1
 module.exports.getSignup= (req,res,next)=>{
-    if (req.user) {
-        // Redirect with status code 302 (Found)
+    if (req.user) { 
         return res.redirect(302, '/profile');
       }
-      // Return JSON response with status code 200 (OK)
       res.status(200).json({ message: 'Please sign up' });
 
 }
