@@ -2,10 +2,10 @@
   "name": "money-managment",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js -e js,hbs,json,css"
+    "start": "nodemon index.js -e js,hbs,json,css"
   },
   "keywords": [],
   "author": "",

@@ -6,7 +6,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const cors = require('cors'); // Import cors
 const app = express();
-const PORT = process.env.PORT || 4444;
+const PORT = process.env.PORT || 4000;
 
 // CORS configuration
 app.use(cors({
