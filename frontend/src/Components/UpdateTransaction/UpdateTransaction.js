@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Form, Row, Col, FormGroup, FormLabel, FormControl, Button } from 'react-bootstrap';
-import axios from 'axios';
+import axios from "../../utils/axios"
 import { useParams, useNavigate } from 'react-router-dom';
 import MyNavbar from '../MyNavbar/MyNavbar';
 
@@ -20,7 +20,7 @@ const UpdateTransaction = () => {
     // Fetch the existing transaction details
     const fetchTransaction = async () => {
       try {
-        const response = await axios.get(`http://localhost:4444/updatetransaction/${id}`, { withCredentials: true });
+        const response = await axios.get(`/updatetransaction/${id}`, { withCredentials: true });
         const { amount, type, category, description, date } = response.data; // Assuming the response has this structure
         setAmount(amount);
         setType(type);
@@ -55,7 +55,7 @@ const UpdateTransaction = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`http://localhost:4444/updatetransaction/${id}`, {
+      const response = await axios.post(`/updatetransaction/${id}`, {
         amount,
         type,
         creditCategory: type === 'Credit' ? creditCategory : '',

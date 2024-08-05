@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from "../../utils/axios"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { CircularProgress, Box, Typography } from '@mui/material';
 import MyNavbar from '../MyNavbar/MyNavbar';
@@ -15,7 +15,7 @@ const TransactionBar = () => {
   useEffect(() => {
     const fetchTransactionData = async () => {
       try {
-        const response = await axios.get('http://localhost:4444/transactionBar', { withCredentials: true });
+        const response = await axios.get('/transactionBar', { withCredentials: true });
         const {
           totalCredit,
           totalDebit,

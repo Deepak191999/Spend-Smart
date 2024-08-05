@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from "../../utils/axios"
 import { useNavigate } from 'react-router-dom';
 import './Signup.css'; // Import the CSS file
 
@@ -12,7 +12,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4444/signup', {
+      const response = await axios.post('/signup', {
         username,
         password,
       });

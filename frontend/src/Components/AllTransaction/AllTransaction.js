@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../utils/axios"
 import { Table, Button, Form } from "react-bootstrap";
 import moment from "moment";
 import './AllTransaction.css'; // Import CSS file
@@ -30,7 +30,7 @@ const navigate = useNavigate();
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get('http://localhost:4444/allTransaction', { withCredentials: true });
+        const response = await axios.get('/allTransaction', { withCredentials: true });
         const { transactions, totalCredit, totalDebit, balance } = response.data;
         setTransactions(transactions);
         setTotalCredit(totalCredit);
@@ -47,7 +47,7 @@ const navigate = useNavigate();
   const handleFilterSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4444/allTransaction', { startDate, endDate }, { withCredentials: true });
+      const response = await axios.post('/allTransaction', { startDate, endDate }, { withCredentials: true });
       const { transactions, totalCredit, totalDebit, balance } = response.data;
       setTransactions(transactions);
       setTotalCredit(totalCredit);
@@ -60,7 +60,7 @@ const navigate = useNavigate();
 
   const handleExport = async () => {
     try {
-      const response = await axios.get('http://localhost:4444/exportdata', { withCredentials: true, responseType: 'blob' });
+      const response = await axios.get('/exportdata', { withCredentials: true, responseType: 'blob' });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -75,7 +75,7 @@ const navigate = useNavigate();
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:4444/deletetransaction/${id}`, { withCredentials: true });
+      const response = await axios.get(`/deletetransaction/${id}`, { withCredentials: true });
       const { transactions, totalCredit, totalDebit, balance } = response.data;
       setTransactions(transactions);
       setTotalCredit(totalCredit);
@@ -102,7 +102,7 @@ const navigate = useNavigate();
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`http://localhost:4444/updatetransaction/${editTransactionId}`, editedTransaction, { withCredentials: true });
+      const response = await axios.put(`/updatetransaction/${editTransactionId}`, editedTransaction, { withCredentials: true });
       const { transactions, totalCredit, totalDebit, balance } = response.data;
       setTransactions(transactions);
       setTotalCredit(totalCredit);

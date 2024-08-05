@@ -3,7 +3,7 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import './IncomeStats.css'; // Ensure you create this CSS file
 import MyNavbar from '../MyNavbar/MyNavbar';
-import axios from 'axios';
+import axios from "../../utils/axios"
 
 // Register Chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
@@ -14,7 +14,7 @@ const IncomeStats = () => {
   useEffect(() => {
     const fetchIncomeStats = async () => {
       try {
-        const response = await axios.get('http://localhost:4444/incomeStats', { withCredentials: true });
+        const response = await axios.get('/incomeStats', { withCredentials: true });
         setIncomePercentage(response.data.incomePercentage);
       } catch (error) {
         console.error("Error fetching income statistics:", error);

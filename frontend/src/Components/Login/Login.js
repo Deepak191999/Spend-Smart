@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from "../../utils/axios"
 import { useNavigate } from 'react-router-dom';
 import './Login.css'; // Import the CSS file
 
@@ -12,7 +12,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4444/login', {
+      const response = await axios.post('/login', {
         username,
         password,
       }, { withCredentials: true }); // Allow credentials for CORS

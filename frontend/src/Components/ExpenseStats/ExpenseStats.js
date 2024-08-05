@@ -3,7 +3,7 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import './ExpenseStats.css'; // Ensure you create this CSS file
 import MyNavbar from '../MyNavbar/MyNavbar';
-import axios from 'axios';
+import axios from "../../utils/axios"
 
 // Register Chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
@@ -14,7 +14,7 @@ const ExpenseStats = () => {
   useEffect(() => {
     const fetchExpenseStats = async () => {
       try {
-        const response = await axios.get('http://localhost:4444/expenseStats', { withCredentials: true });
+        const response = await axios.get('/expenseStats', { withCredentials: true });
         setExpensePercentage(response.data.expensePercentage);
       } catch (error) {
         console.error("Error fetching expense statistics:", error);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './Navbar.module.css';
-import axios from 'axios';
+import axios from "../../utils/axios"
 
 const MyNavbar = () => {
 
@@ -10,7 +10,7 @@ const MyNavbar = () => {
 
   const handleLogout = async () => {
     try {
-        const response = await axios.post('http://localhost:4444/logout', {}, { withCredentials: true });
+        const response = await axios.post('/logout', {}, { withCredentials: true });
         console.log(response.data.message); // Handle successful logout
         if (response.status === 200) {
           

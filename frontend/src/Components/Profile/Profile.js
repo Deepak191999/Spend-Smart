@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Form, Row, Col, FormGroup, FormLabel, FormControl, Button } from 'react-bootstrap';
-import axios from 'axios';
+import axios from "../../utils/axios"
 import MyNavbar from '../MyNavbar/MyNavbar';
 
 const Profile = () => {
@@ -25,7 +25,7 @@ const Profile = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:4444/addtransaction', {
+      const response = await axios.post('/addtransaction', {
         amount,
         type,
         creditCategory,
