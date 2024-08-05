@@ -6,7 +6,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const cors = require('cors'); // Import cors
 const app = express();
-const PORT = 4444;
+const PORT = process.env.PORT || 4444;
 
 // CORS configuration
 app.use(cors({
@@ -15,7 +15,7 @@ app.use(cors({
     credentials: true // Allow cookies to be sent/received
   }));
 
-app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
