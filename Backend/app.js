@@ -37,7 +37,7 @@ app.use((req, res) => {
 
 // Connect to MongoDB and start server
 mongoose
-    .connect(process.env.MONGODB_URL)
+    .connect(MONGODB_URL)
     .then(() => {
         app.listen(PORT, () => {
             console.log(`Server running at http://localhost:${PORT}`);
