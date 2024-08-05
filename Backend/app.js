@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 4444;
 
 // CORS configuration
 app.use(cors({
-    origin: 'http://localhost:3000', // React frontend URL
+    origin: 'https://spend-smart-virid.vercel.app', // React frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     credentials: true // Allow cookies to be sent/received
   }));
