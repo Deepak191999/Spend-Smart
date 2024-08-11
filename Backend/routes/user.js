@@ -6,7 +6,6 @@ const userController= require('../controller/user')
 const isLoggedIn= require('../middlewares/isLoggedIn')
 
 
-
 router.get('/',userController.getHome)
 router.get('/login',userController.getLogin)
 router.get('/signup',userController.getSignup)
