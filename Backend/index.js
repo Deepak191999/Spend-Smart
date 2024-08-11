@@ -7,10 +7,11 @@ const mongoose = require('mongoose');
 const cors = require('cors'); // Import cors
 const app = express();
 const PORT = process.env.PORT || 4000;
+const MongoStore = require('connect-mongo');
 
 // CORS configuration
 app.use(cors({
-    origin: 'https://spend-smart-virid.vercel.app', // React frontend URL
+    origin: ['https://spend-smart-virid.vercel.app','http://localhost:3000'], // React frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     credentials: true // Allow cookies to be sent/received
   }));
@@ -20,7 +21,19 @@ app.use(cors({
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+// app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(session({ 
+    secret: process.env.SESSION_SECRET,
+     resave: false,
+      saveUninitialized: false,
+      store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URL,
+        ttl: 14 * 24 * 60 * 60 // 14 days
+    }),
+      cookie: {
+        secure: process.env.NODE_ENV === 'production', // Set secure cookies in production
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
+    } }));
 app.use(passport.initialize());
 app.use(passport.session());
 
