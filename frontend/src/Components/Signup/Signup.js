@@ -30,7 +30,7 @@ const Signup = () => {
 
   return (
     <div className="signup-container">
-      {/* <h2 className="signup-header">Signup</h2> */}
+      <h2 className="signup-header">Signup</h2>
       <form className="signup-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="form-label">Email:</label>
