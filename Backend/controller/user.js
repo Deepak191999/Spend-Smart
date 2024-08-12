@@ -1,33 +1,64 @@
-
-const transactions = require('../models/transactions')
 const Transaction= require('../models/transactions')
 const User= require('../models/users')
 const bcrypt=require('bcrypt')
 const moment = require('moment');
 const exceljs= require('exceljs')
+const Verify = require("../authentication/VerifyJWT");
+
+
+
+const generateAccessTokenAndRefereshToken = async (userId) => {
+    try {
+      const user = await User.findById(userId);
+      const accessToken = await user.generateAccessToken();
+      const refreshToken = await user.generateRefreshToken();
+      user.refreshToken = refreshToken;
+      user.accessToken = accessToken;
+  
+      await user.save();
+  
+      return { accessToken, refreshToken };
+    } catch (err) {
+      console.log("Error generating tokens:", err);
+    }
+  };
+  
+
+
+  module.exports.getCheckAuth = async(req, res, next) => {
+
+    if(await Verify(req,res,next)){
+      console.log("User is authenticated");
+      return res.json({ authenticated: true });
+    }
+    console.log("User is not authenticated");
+    return res.json({ authenticated: false });
+  }
 
 
 //done 1
-module.exports.getHome= (req,res,next)=>{
-    if (req.user) {
-        
-        return res.redirect(302, '/profile');
+module.exports.getHome= async(req,res,next)=>{
+    if(await Verify(req,res,next)){
+        return res.status(302).json({ message: "Redirecting" });
       }
-    res.status(200).json({ message: 'Welcome to the Home Page' });
+      res.status(200).json({ message: "Welcome to the Home Page" });
 }
 
 //done 1
-module.exports.getLogin= (req,res,next)=>{
-    if (req.user) {        
-        return res.redirect(302, '/profile');
-      }      
+module.exports.getLogin=async (req,res,next)=>{
+    if (await Verify(req,res,next)) {
+        return res.redirect(302, "/profile");
+      }   
       res.status(200).json({ message: 'Please log in' });
 }
 
 //done 1
-module.exports.getSignup= (req,res,next)=>{
-    if (req.user) { 
-        return res.redirect(302, '/profile');
+module.exports.getSignup= async(req,res,next)=>{
+    // if (req.user) { 
+    //     return res.redirect(302, '/profile');
+    //   }
+    if (await Verify(req,res,next)) {
+        return res.redirect(302, "/profile");
       }
       res.status(200).json({ message: 'Please sign up' });
 
@@ -36,19 +67,19 @@ module.exports.getSignup= (req,res,next)=>{
 
 //done 1
 module.exports.postSignup= async(req,res,next)=>{
-    if (req.user) {
-        // Redirect with status code 302 (Found) if user is already logged in
-        return res.redirect(302, '/profile');
+    if (await Verify(req,res,next)) {
+        return res.redirect(302, "/profile");
       }
     
-      const { username, password } = req.body;
+    
+      const { email, password } = req.body;
       
       try {
         // Check if the user already exists
-        let user = await User.findOne({ username });
+        let user = await User.findOne({ email });
         if (user) {
           // Send JSON response with status code 400 (Bad Request) if username exists
-          return res.status(400).json({ message: 'Username exists, choose a different name' });
+          return res.status(400).json({ message: 'Email exists, choose a different name' });
         }
     
         // Hash the password
@@ -61,7 +92,7 @@ module.exports.postSignup= async(req,res,next)=>{
     
           // Create new user
           user = new User({
-            username,
+            email,
             password: hash,
           });
     
@@ -77,9 +108,55 @@ module.exports.postSignup= async(req,res,next)=>{
       }
 }
 
+module.exports.postLogin = async (req, res, next) => {
+   
+  
+    if(await Verify(req,res,next)){
+      return res.status(200).json({ message: "User already logged in" });
+    }
+  
+    
+    const { email, password } = req.body;
+    console.log(email, password);
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password required" });
+    }
+    let existingUser  = await User.findOne({ email });
+    if (!existingUser) {
+      return res.status(400).json({ message: "User not found" });
+    }
+  
+    const isMatch = await bcrypt.compare(password, existingUser.password);
+  
+          if (!isMatch) {
+            return res.status(400).json({ message: "Password worng" });
+          } 
+  
+    const { accessToken, refreshToken } =await generateAccessTokenAndRefereshToken(existingUser._id);
+    const options = {
+      httpOnly: true,
+      expires: new Date(new Date().getTime() + 31557600),
+      secure:true,
+      sameSite:'none',
+      }
+  
+    let user = await User.findOne({ _id: existingUser._id }).select(
+      "-refreshToken -password"
+    );
+   console.log(user);
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json({
+        user,
+        message: "Successfully Logged In",
+      });
+  }
+
 //done 1
-module.exports.getProfile=(req,res,next)=>{
-    if (!req.user) {
+module.exports.getProfile=async(req,res,next)=>{
+    if (!(await Verify(req,res,next))) {
         // Send JSON response with status code 401 (Unauthorized) if the user is not logged in
         return res.status(401).json({ message: 'Unauthorized access. Please log in.' });
       }
@@ -92,14 +169,14 @@ module.exports.getProfile=(req,res,next)=>{
 //done 1
 module.exports.postAddTransaction = async(req,res,next)=>{
     const { amount, type, creditCategory, debitCategory, description, date } = req.body;
-    const userId = req.user ? req.user._id : null;
+    
   
     // Check if the user is authenticated
-    if (!userId) {
+    if (!(await Verify(req,res,next))) {
       console.error("User is not authenticated");
       return res.status(401).json({ message: "User is not authenticated" });
     }
-  
+    const userId = req.user._id;
     const category = type === "Credit" ? creditCategory : debitCategory;
   
     try {
@@ -124,6 +201,10 @@ module.exports.postAddTransaction = async(req,res,next)=>{
 
 //done 1
 module.exports.getAllTransaction = async (req, res, next) => {
+    if (!(await Verify(req,res,next))) {
+        console.error("User is not authenticated");
+        return res.status(401).json({ message: "User is not authenticated" });
+      }
     const userId = req.user._id; // Get user ID from the authenticated user
 
     try {
@@ -163,6 +244,10 @@ module.exports.getAllTransaction = async (req, res, next) => {
 
 //done 1
 module.exports.postAllTransaction = async (req, res, next) => {
+    if (!(await Verify(req,res,next))) {
+        console.error("User is not authenticated");
+        return res.status(401).json({ message: "User is not authenticated" });
+      }
     const userId = req.user._id;
     const { startDate, endDate } = req.body;
 
@@ -213,6 +298,10 @@ module.exports.postAllTransaction = async (req, res, next) => {
 
 //done 1
 module.exports.getTransactionBar = async (req, res, next) => {
+    if (!(await Verify(req,res,next))) {
+        console.error("User is not authenticated");
+        return res.status(401).json({ message: "User is not authenticated" });
+      }
     const userId = req.user._id;
 
     try {
@@ -262,7 +351,10 @@ module.exports.getTransactionBar = async (req, res, next) => {
 
 //done 1
 module.exports.getIncomeStats=async (req,res,next)=>{
-  
+    if (!(await Verify(req,res,next))) {
+        console.error("User is not authenticated");
+        return res.status(401).json({ message: "User is not authenticated" });
+      }
     const userId = req.user._id;
 
     try {
@@ -298,6 +390,10 @@ module.exports.getIncomeStats=async (req,res,next)=>{
 
 //done 1
 module.exports.getExpenseStats=async (req,res,next)=>{
+    if (!(await Verify(req,res,next))) {
+        console.error("User is not authenticated");
+        return res.status(401).json({ message: "User is not authenticated" });
+      }
     const userId = req.user._id;
 
     try {
@@ -335,6 +431,10 @@ module.exports.getExpenseStats=async (req,res,next)=>{
 //done 1
 module.exports.getDeleteTransaction= async(req,res,next)=>{
     const transactionId = req.params.id;
+    if (!(await Verify(req,res,next))) {
+        console.error("User is not authenticated");
+        return res.status(401).json({ message: "User is not authenticated" });
+      }
     const userId = req.user._id;
 
     try {
@@ -383,6 +483,10 @@ module.exports.getDeleteTransaction= async(req,res,next)=>{
 //done 1
 module.exports.getUpdateTransaction=async(req,res,next)=>{
     const transactionId = req.params.id;
+    if (!(await Verify(req,res,next))) {
+        console.error("User is not authenticated");
+        return res.status(401).json({ message: "User is not authenticated" });
+      }
     const userId = req.user._id;
 
     try {
@@ -403,7 +507,11 @@ module.exports.getUpdateTransaction=async(req,res,next)=>{
 module.exports.postUpdateTransaction= async(req,res,next)=>{
     const { amount, type, creditCategory, debitCategory, description, date } = req.body;
     const transactionId = req.params.id;
-    const userId = req.user ? req.user._id : null;
+    if (!(await Verify(req,res,next))) {
+        console.error("User is not authenticated");
+        return res.status(401).json({ message: "User is not authenticated" });
+      }
+    const userId =  req.user._id;
 
     try {
         // Validate the user
@@ -469,6 +577,12 @@ module.exports.postUpdateTransaction= async(req,res,next)=>{
 
 //done 1
 module.exports.getExportData= async(req,res,next)=>{
+    if (!(await Verify(req,res,next))) {
+        console.error("User is not authenticated");
+        return res.status(401).json({ message: "User is not authenticated" });
+      }
+      
+
     try {
         // Create a new workbook and worksheet
         const workbook = new exceljs.Workbook();
@@ -521,91 +635,3 @@ module.exports.getExportData= async(req,res,next)=>{
 
 
 
-
-// module.exports.getExportData = async (req, res, next) => {
-
-//     try {
-//         const filteredDataStr = req.body.filteredData;
-//         if (!filteredDataStr) {
-//             throw new Error('No data provided for export');
-//         }
-//         const filteredData = JSON.parse(filteredDataStr);
-
-//         const workbook = new exceljs.Workbook();
-//         const worksheet = workbook.addWorksheet("User Transaction");
-
-//         worksheet.columns = [
-//             { header: "S no.", key: "sNo", width: 10 },
-//             { header: "Date", key: "date", width: 15 },
-//             { header: "Amount", key: "amount", width: 15 },
-//             { header: "Type", key: "type", width: 10 },
-//             { header: "Category", key: "category", width: 15 },
-//             { header: "Description", key: "description", width: 30 }
-//         ];
-
-//         filteredData.forEach((item, index) => {
-//             worksheet.addRow({
-//                 sNo: index + 1,
-//                 date: new Date(item.date), // Ensure date format is correct
-//                 amount: item.amount,
-//                 type: item.type,
-//                 category: item.category,
-//                 description: item.description
-//             });
-//         });
-
-//         worksheet.getColumn('date').eachCell((cell, rowNumber) => {
-//             if (rowNumber > 1) {
-//                 cell.numFmt = 'mm/dd/yyyy';
-//             }
-//         });
-
-//         worksheet.getRow(1).eachCell((cell) => {
-//             cell.font = { bold: true };
-//         });
-
-//         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-//         res.setHeader('Content-Disposition', 'attachment; filename=user_transactions.xlsx');
-
-//         await workbook.xlsx.write(res);
-//         res.end();
-//     } catch (error) {
-//         console.log("Error in getExportData:", error);
-//         next(error);
-//     }
-// };
-
-
-
-// module.exports.getTransactionBar= async(req,res,next)=>{
-//     const userId=req.user._id;
-// //  console.log("userid aya getTransactionBar",userId);
-//     try {
-//         const userTransaction= await transaction.find({userId});
-//         let totalCredit=0;
-//         let totalDebit=0
-//         userTransaction.forEach((item)=>{
-//             if(item.type==="Credit"){
-//                 totalCredit += item.amount} 
-//             if(item.type==="Debit"){
-//                 totalDebit += item.amount}
-//         })
-//         let balance = totalCredit - totalDebit;
-//         let turnOver = totalCredit + totalDebit;
-//         let savingsRate = totalCredit > 0 ? ((balance / totalCredit) * 100).toFixed(1) : 0; 
-//         let savingsRateIsGood = (savingsRate > 20)
-//         res.render('transactionBar',{
-//             transactions:userTransaction,
-//             totalCredit,
-//             totalDebit,
-//             turnOver,
-//             balance,
-//             savingsRate,
-//             savingsRateIsGood
-//         })
-//     } catch (error) {
-//         console.log("error getting all transaction");
-//         next(error)
-//     }
-
-// }

@@ -6,15 +6,18 @@ import axios from "../../utils/axios"
 const MyNavbar = () => {
 
   const navigate = useNavigate();
-
+  function clearCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';}
 
   const handleLogout = async () => {
     try {
-        const response = await axios.post('/logout', {}, { withCredentials: true });
+        const response = await axios.get('/logout', {}, { withCredentials: true });
         console.log(response.data.message); // Handle successful logout
         if (response.status === 200) {
           
-                alert('Logged out successfully'); // You can replace this with a more sophisticated notification system
+                alert('Logged out successfully'); 
+                clearCookie("accessToken")
+                clearCookie("refreshToken")
                 navigate('/');
         }
     } catch (error) {

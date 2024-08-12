@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './Signup.css'; // Import the CSS file
 
 const Signup = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate(); // Hook to navigate to other routes
@@ -13,7 +13,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       const response = await axios.post('/signup', {
-        username,
+        email,
         password,
       });
 
@@ -33,12 +33,12 @@ const Signup = () => {
       {/* <h2 className="signup-header">Signup</h2> */}
       <form className="signup-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label className="form-label">Username:</label>
+          <label className="form-label">Email:</label>
           <input
             type="text"
             className="form-input"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
