@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './Login.css'; // Import the CSS file
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate(); // Hook to navigate to other routes
@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('/login', {
-        email,
+        username,
         password,
       }, { withCredentials: true }); // Allow credentials for CORS
 
@@ -23,7 +23,7 @@ const Login = () => {
         navigate('/profile'); // Redirect to the /profile route
       }
     } catch (err) {
-      setError('Invalid email or password');
+      setError('Invalid username or password');
       console.error('Login error:', err.response.data);
     }
   };
@@ -36,12 +36,12 @@ const Login = () => {
       <h2 className="login-header">Login</h2>
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label className="form-label">Email:</label>
+          <label className="form-label">Username:</label>
           <input
             type="text"
             className="form-input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>

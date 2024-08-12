@@ -2,7 +2,7 @@ const mongoose=require('mongoose')
 const Schema=mongoose.Schema
 const jwt = require('jsonwebtoken');
 const userSchema= new Schema({
-    email:{
+    username:{
         type:String,
         required:true,
         unique:true
@@ -33,7 +33,7 @@ userSchema.methods.generateAccessToken = async function () {
     return jwt.sign(
         {
             userId: this._id,
-            email: this.email
+            username: this.username
         },
         process.env.ACCESS_TOKEN_KEY
         ,

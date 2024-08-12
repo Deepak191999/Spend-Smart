@@ -72,14 +72,14 @@ module.exports.postSignup= async(req,res,next)=>{
       }
     
     
-      const { email, password } = req.body;
+      const { username, password } = req.body;
       
       try {
         // Check if the user already exists
-        let user = await User.findOne({ email });
+        let user = await User.findOne({ username });
         if (user) {
           // Send JSON response with status code 400 (Bad Request) if username exists
-          return res.status(400).json({ message: 'Email exists, choose a different name' });
+          return res.status(400).json({ message: 'username exists, choose a different name' });
         }
     
         // Hash the password
@@ -92,7 +92,7 @@ module.exports.postSignup= async(req,res,next)=>{
     
           // Create new user
           user = new User({
-            email,
+            username,
             password: hash,
           });
     
@@ -116,12 +116,12 @@ module.exports.postLogin = async (req, res, next) => {
     }
   
     
-    const { email, password } = req.body;
-    console.log(email, password);
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email and password required" });
+    const { username, password } = req.body;
+    console.log(username, password);
+    if (!username || !password) {
+      return res.status(400).json({ message: "username and password required" });
     }
-    let existingUser  = await User.findOne({ email });
+    let existingUser  = await User.findOne({ username });
     if (!existingUser) {
       return res.status(400).json({ message: "User not found" });
     }
