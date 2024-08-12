@@ -21,7 +21,7 @@ app.use(cors({
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+// app.use(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: true }));
 app.use(session({ 
     secret: process.env.SESSION_SECRET,
      resave: false,
