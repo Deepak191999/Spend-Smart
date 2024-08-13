@@ -4,7 +4,7 @@ const bcrypt=require('bcrypt')
 const moment = require('moment');
 const exceljs= require('exceljs')
 const Verify = require("../authentication/VerifyJWT");
-
+const jwt = require('jsonwebtoken');
 
 
 const generateAccessTokenAndRefereshToken = async (userId) => {
@@ -66,47 +66,94 @@ module.exports.getSignup= async(req,res,next)=>{
 
 
 //done 1
-module.exports.postSignup= async(req,res,next)=>{
-    if (await Verify(req,res,next)) {
-        return res.redirect(302, "/profile");
-      }
+// module.exports.postSignup= async(req,res,next)=>{
+//     if (await Verify(req,res,next)) {
+//         return res.redirect(302, "/profile");
+//       }
     
     
-      const { username, password } = req.body;
+//       const { username, password } = req.body;
       
-      try {
-        // Check if the user already exists
-        let user = await User.findOne({ username });
-        if (user) {
-          // Send JSON response with status code 400 (Bad Request) if username exists
-          return res.status(400).json({ message: 'username exists, choose a different name' });
-        }
+//       try {
+//         // Check if the user already exists
+//         let user = await User.findOne({ username });
+//         if (user) {
+//           // Send JSON response with status code 400 (Bad Request) if username exists
+//           return res.status(400).json({ message: 'username exists, choose a different name' });
+//         }
     
-        // Hash the password
-        const saltRounds = 10;
-        bcrypt.hash(password, saltRounds, async (err, hash) => {
-          if (err) {
-            // Send JSON response with status code 500 (Internal Server Error) if hashing fails
-            return res.status(500).json({ message: 'Error hashing password' });
-          }
+//         // Hash the password
+//         const saltRounds = 10;
+//         bcrypt.hash(password, saltRounds, async (err, hash) => {
+//           if (err) {
+//             // Send JSON response with status code 500 (Internal Server Error) if hashing fails
+//             return res.status(500).json({ message: 'Error hashing password' });
+//           }
     
-          // Create new user
-          user = new User({
-            username,
-            password: hash,
-          });
+//           // Create new user
+//           user = new User({
+//             username,
+//             password: hash,
+//           });
     
-          // Save the user to the database
-          await user.save();
+//           // Save the user to the database
+//           await user.save();
           
-          // Send JSON response with status code 201 (Created) after successful signup
-          res.status(201).json({ message: 'Signup successful, please log in' });
-        });
-      } catch (error) {
-        // Send JSON response with status code 500 (Internal Server Error) if any error occurs
-        res.status(500).json({ message: 'Server error', error });
-      }
-}
+//           // Send JSON response with status code 201 (Created) after successful signup
+//           res.status(201).json({ message: 'Signup successful, please log in' });
+//         });
+//       } catch (error) {
+//         // Send JSON response with status code 500 (Internal Server Error) if any error occurs
+//         res.status(500).json({ message: 'Server error', error });
+//       }
+// }
+
+
+
+module.exports.postSignup = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Check if the user already exists
+    let user = await User.findOne({ username });
+    if (user) {
+      return res.status(400).json({ message: 'Username already exists, please choose a different name.' });
+    }
+
+    // Hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Create a new user
+    user = new User({
+      username,
+      password: hashedPassword,
+    });
+
+    // Save the user to the database
+    await user.save();
+
+    // Generate JWT tokens
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
+
+    // Save the refresh token in the user document
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    // Set tokens in cookies (if needed)
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+
+    // Send JSON response after successful signup
+    res.status(201).json({ message: 'Signup successful, please log in.' });
+
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
 
 module.exports.postLogin = async (req, res, next) => {
    

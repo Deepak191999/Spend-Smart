@@ -26,6 +26,15 @@ module.exports =  (async(req, res, next) => {
         return true;
         
     } catch (error) {
-        return false;
-    }
+        if (error instanceof jwt.TokenExpiredError) {
+            console.log("Token expired");
+            return false; 
+          } else if (error instanceof jwt.JsonWebTokenError) {
+            console.log("Invalid token");
+            return false; 
+          } else {
+            console.error("Token verification error:", error);
+            return false; 
+          }
+        }
 })
